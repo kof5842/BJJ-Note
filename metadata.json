@@ -1,0 +1,8 @@
+{
+  "name": "주짓수 스케치",
+  "description": "나만의 기술 체계를 구축하고 영상을 기록하며, 실전 숙련도를 체계적으로 관리하는 자기주도형 주짓수 학습 솔루션입니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

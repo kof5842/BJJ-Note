@@ -1,0 +1,211 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Default-Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'kof5842@gmail.com';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isNotBanned() {
+      return !exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        || !('isBanned' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data)
+        || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isBanned != true;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'email'])
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 256
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 128))
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 1024))
+        && (!('role' in data) || (data.role in ['admin', 'user']))
+        && (!('isBanned' in data) || (data.isBanned is bool))
+        && (!('bannedAt' in data) || (data.bannedAt is string && data.bannedAt.size() <= 64))
+        && (!('bannedReason' in data) || (data.bannedReason is string && data.bannedReason.size() <= 256))
+        && (!('videoCount' in data) || (data.videoCount is number))
+        && (!('queueCount' in data) || (data.queueCount is number))
+        && (!('lastActiveAt' in data) || (data.lastActiveAt is string && data.lastActiveAt.size() <= 64))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidUserArchive(data) {
+      return data.keys().hasAll(['userId', 'videos', 'settings'])
+        && data.userId is string && data.userId.size() <= 128
+        && data.videos is list
+        && (!('queueItems' in data) || data.queueItems is list)
+        && (!('metadata' in data) || data.metadata is map)
+        && data.settings is map
+        && (!('mindmapState' in data) || data.mindmapState is map)
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidCommunityPost(data) {
+      return data.keys().hasAll(['id', 'userId', 'userName', 'title', 'content', 'category', 'postType', 'createdAt'])
+        && data.id is string && data.id.size() <= 128
+        && data.userId is string && data.userId.size() <= 128
+        && data.userName is string && data.userName.size() <= 128
+        && data.title is string && data.title.size() <= 256
+        && data.content is string && data.content.size() <= 10000
+        && data.category is string && data.category.size() <= 64
+        && data.postType in ['TEXT', 'VIDEO_CLIPS']
+        && (!('postNumber' in data) || data.postNumber is number)
+        && (!('userEmail' in data) || (data.userEmail is string && data.userEmail.size() <= 256))
+        && (!('userPhotoUrl' in data) || (data.userPhotoUrl is string && data.userPhotoUrl.size() <= 1024))
+        && (!('youtubeUrl' in data) || (data.youtubeUrl is string && data.youtubeUrl.size() <= 1024))
+        && (!('youtubeId' in data) || (data.youtubeId is string && data.youtubeId.size() <= 128))
+        && (!('videoTitle' in data) || (data.videoTitle is string && data.videoTitle.size() <= 256))
+        && (!('thumbnailUrl' in data) || (data.thumbnailUrl is string && data.thumbnailUrl.size() <= 1024))
+        && (!('positionTag' in data) || (data.positionTag is string && data.positionTag.size() <= 128))
+        && (!('clips' in data) || data.clips is list)
+        && (!('poll' in data) || data.poll is map)
+        && (!('isNotice' in data) || data.isNotice is bool)
+        && (!('tags' in data) || data.tags is list)
+        && (!('viewsCount' in data) || data.viewsCount is number)
+        && (!('likesCount' in data) || data.likesCount is number)
+        && (!('likedUserIds' in data) || data.likedUserIds is list)
+        && (!('dislikesCount' in data) || data.dislikesCount is number)
+        && (!('dislikedUserIds' in data) || data.dislikedUserIds is list)
+        && (!('commentsCount' in data) || data.commentsCount is number)
+        && (!('isPrivateByAdmin' in data) || data.isPrivateByAdmin is bool)
+        && (!('isPinned' in data) || data.isPinned is bool)
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidCommunityComment(data) {
+      return data.keys().hasAll(['id', 'postId', 'userId', 'userName', 'content', 'createdAt'])
+        && data.id is string && data.id.size() <= 128
+        && data.postId is string && data.postId.size() <= 128
+        && (!('parentId' in data) || data.parentId == null || (data.parentId is string && data.parentId.size() <= 128))
+        && data.userId is string && data.userId.size() <= 128
+        && data.userName is string && data.userName.size() <= 128
+        && (!('userEmail' in data) || (data.userEmail is string && data.userEmail.size() <= 256))
+        && (!('userPhotoUrl' in data) || (data.userPhotoUrl is string && data.userPhotoUrl.size() <= 1024))
+        && data.content is string && data.content.size() <= 4000
+        && (!('likesCount' in data) || data.likesCount is number)
+        && (!('likedUserIds' in data) || data.likedUserIds is list)
+        && (!('isPrivateByAdmin' in data) || data.isPrivateByAdmin is bool)
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    // Connection test helper
+    match /test/{docId} {
+      allow get: if true;
+    }
+
+    // Per-User Account Partitioned Profile
+    match /users/{userId} {
+      allow get: if (isOwner(userId) || isAdmin()) && isValidId(userId);
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && isValidId(userId)
+        && isValidUserProfile(incoming())
+        && incoming().uid == request.auth.uid;
+      allow update: if (isOwner(userId) || isAdmin()) && isValidId(userId)
+        && isValidUserProfile(incoming());
+      allow delete: if (isOwner(userId) || isAdmin()) && isValidId(userId);
+
+      // User Private Data Subcollection (Isolated per-account database)
+      match /userData/{docId} {
+        allow get: if (isOwner(userId) || isAdmin()) && isValidId(docId);
+        allow list: if isOwner(userId) || isAdmin();
+        allow create: if isOwner(userId) && isValidId(docId)
+          && isValidUserArchive(incoming())
+          && incoming().userId == request.auth.uid;
+        allow update: if isOwner(userId) && isValidId(docId)
+          && isValidUserArchive(incoming())
+          && incoming().userId == request.auth.uid;
+        allow delete: if (isOwner(userId) || isAdmin()) && isValidId(docId);
+      }
+
+      // User Watch History Logs Subcollection
+      match /watchLogs/{logId} {
+        allow read, write: if (isOwner(userId) || isAdmin()) && isValidId(logId);
+      }
+    }
+
+    // Global System Configuration (Admin Managed Global Settings & Presets)
+    match /systemConfig/{docId} {
+      allow read: if isValidId(docId);
+      allow write: if isAdmin() && isValidId(docId);
+    }
+
+    // Shared Video Classifications Index (Crowd-Sourced Metadata)
+    match /sharedVideoClassifications/{youtubeId} {
+      allow read: if isSignedIn() && isValidId(youtubeId);
+      allow write: if isSignedIn() && isValidId(youtubeId) && isNotBanned();
+    }
+
+    // Community Free Board (자유게시판) Posts
+    match /communityPosts/{postId} {
+      allow get: if isSignedIn() && isValidId(postId) && (
+        resource.data.isPrivateByAdmin != true || resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow list: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(postId)
+        && isValidCommunityPost(incoming())
+        && incoming().userId == request.auth.uid
+        && isNotBanned();
+      allow update: if isSignedIn() && isValidId(postId)
+        && isValidCommunityPost(incoming())
+        && isNotBanned()
+        && (
+          isAdmin() ||
+          // Author modifying content/metadata
+          (resource.data.userId == request.auth.uid && incoming().userId == resource.data.userId && incoming().createdAt == resource.data.createdAt) ||
+          // Anyone updating stats: likes, dislikes, views, poll, comment counts
+          incoming().diff(resource.data).affectedKeys().hasOnly(['viewsCount', 'likesCount', 'likedUserIds', 'dislikesCount', 'dislikedUserIds', 'poll', 'commentsCount', 'updatedAt'])
+        );
+      allow delete: if isSignedIn() && isValidId(postId) && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+
+      // Hierarchical comments on community posts
+      match /comments/{commentId} {
+        allow get, list: if isSignedIn();
+        allow create: if isSignedIn() && isValidId(postId) && isValidId(commentId)
+          && isValidCommunityComment(incoming())
+          && incoming().userId == request.auth.uid
+          && incoming().postId == postId
+          && isNotBanned();
+        allow update: if isSignedIn() && isValidId(postId) && isValidId(commentId)
+          && isValidCommunityComment(incoming())
+          && isNotBanned()
+          && (
+            isAdmin() ||
+            (resource.data.userId == request.auth.uid && incoming().userId == resource.data.userId) ||
+            incoming().diff(resource.data).affectedKeys().hasOnly(['likesCount', 'likedUserIds', 'updatedAt'])
+          );
+        allow delete: if isSignedIn() && isValidId(postId) && isValidId(commentId) && (
+          resource.data.userId == request.auth.uid || isAdmin()
+        );
+      }
+    }
+  }
+}

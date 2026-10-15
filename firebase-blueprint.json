@@ -1,0 +1,150 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "photoURL": { "type": "string", "maxLength": 1024 },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "isBanned": { "type": "boolean" },
+        "bannedAt": { "type": "string", "maxLength": 64 },
+        "bannedReason": { "type": "string", "maxLength": 256 },
+        "videoCount": { "type": "number" },
+        "queueCount": { "type": "number" },
+        "lastActiveAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["uid", "email"]
+    },
+    "UserArchive": {
+      "title": "UserArchive",
+      "description": "Per-account complete martial arts video archive, configuration, and mindmap layout",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "videos": { "type": "array" },
+        "queueItems": { "type": "array" },
+        "metadata": { "type": "object" },
+        "settings": { "type": "object" },
+        "mindmapState": { "type": "object" },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "videos", "settings"]
+    },
+    "WatchHistoryLog": {
+      "title": "WatchHistoryLog",
+      "description": "User watch history log record with timestamp and video metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "videoId": { "type": "string", "maxLength": 128 },
+        "videoTitleKo": { "type": "string", "maxLength": 256 },
+        "videoTitleEn": { "type": "string", "maxLength": 256 },
+        "thumbnailUrl": { "type": "string", "maxLength": 1024 },
+        "positionName": { "type": "string", "maxLength": 128 },
+        "categoryName": { "type": "string", "maxLength": 128 },
+        "watchedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "videoId", "videoTitleKo", "watchedAt"]
+    },
+    "CommunityPost": {
+      "title": "CommunityPost",
+      "description": "Community free board post item with optional video clips",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "postNumber": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "userName": { "type": "string", "maxLength": 128 },
+        "userPhotoUrl": { "type": "string", "maxLength": 1024 },
+        "title": { "type": "string", "maxLength": 256 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "category": { "type": "string", "maxLength": 64 },
+        "postType": { "type": "string", "enum": ["TEXT", "VIDEO_CLIPS"] },
+        "youtubeUrl": { "type": "string", "maxLength": 1024 },
+        "youtubeId": { "type": "string", "maxLength": 128 },
+        "videoTitle": { "type": "string", "maxLength": 256 },
+        "thumbnailUrl": { "type": "string", "maxLength": 1024 },
+        "positionTag": { "type": "string", "maxLength": 128 },
+        "clips": { "type": "array" },
+        "tags": { "type": "array" },
+        "viewsCount": { "type": "number" },
+        "likesCount": { "type": "number" },
+        "likedUserIds": { "type": "array" },
+        "commentsCount": { "type": "number" },
+        "isPrivateByAdmin": { "type": "boolean" },
+        "isPinned": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "userName", "title", "content", "category", "postType", "createdAt"]
+    },
+    "CommunityComment": {
+      "title": "CommunityComment",
+      "description": "Hierarchical text comment on a community post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "postId": { "type": "string", "maxLength": 128 },
+        "parentId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userEmail": { "type": "string", "maxLength": 256 },
+        "userName": { "type": "string", "maxLength": 128 },
+        "userPhotoUrl": { "type": "string", "maxLength": 1024 },
+        "content": { "type": "string", "maxLength": 4000 },
+        "likesCount": { "type": "number" },
+        "likedUserIds": { "type": "array" },
+        "isPrivateByAdmin": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "postId", "userId", "userName", "content", "createdAt"]
+    },
+    "SystemConfig": {
+      "title": "SystemConfig",
+      "description": "Global admin presets and platform-wide defaults",
+      "type": "object",
+      "properties": {
+        "globalPositions": { "type": "array" },
+        "globalCategories": { "type": "array" },
+        "globalSubmissions": { "type": "array" },
+        "allowTimelineMemoImages": { "type": "boolean" },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile data"
+    },
+    "/users/{userId}/userData/{docId}": {
+      "schema": "UserArchive",
+      "description": "User's isolated private martial arts data and mindmap"
+    },
+    "/users/{userId}/watchLogs/{logId}": {
+      "schema": "WatchHistoryLog",
+      "description": "User private watch history log records"
+    },
+    "/communityPosts/{postId}": {
+      "schema": "CommunityPost",
+      "description": "Public community free board posts"
+    },
+    "/communityPosts/{postId}/comments/{commentId}": {
+      "schema": "CommunityComment",
+      "description": "Comments on community posts"
+    },
+    "/systemConfig/{docId}": {
+      "schema": "SystemConfig",
+      "description": "Global admin-managed presets and defaults for all accounts"
+    }
+  }
+}
