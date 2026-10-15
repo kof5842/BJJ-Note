@@ -1818,6 +1818,959 @@ export const CURATED_BJJ_RECOMMENDATION_POOL: AiRecommendedVideoCandidate[] = [
     keyDetailTag: '체중 집중 & 상대 반응 카운터 암바',
     language: 'en',
   },
+  // ==========================================
+  // 27. 새들 / 411 / 허니홀 & 아시 가라미 (하체 엔탱글먼트)
+  // ==========================================
+  {
+    id: 'saddle-ko-1',
+    techniqueName: '도복에서도 허니홀(411/새들) 포지션 만드는 가장 쉬운 방법과 하체관절기 연계',
+    techniqueNameEn: 'Easiest Way to Enter Honey Hole (411/Saddle) Position in Gi & No-Gi',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Sf7R9y-jOLY',
+    youtubeId: 'Sf7R9y-jOLY',
+    channelName: '주짓수 하체관절기 아카데미',
+    thumbnailUrl: 'https://i.ytimg.com/vi/Sf7R9y-jOLY/hqdefault.jpg',
+    duration: '07:45',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '인사이드 삼각 락킹 & 상대 반대쪽 다리 제어',
+    language: 'ko',
+  },
+  {
+    id: 'saddle-ko-2',
+    techniqueName: '아웃사이드 아시가라미에서 허니홀(새들/411) 전환 및 인사이드 힐훅 피니시',
+    techniqueNameEn: 'Outside Ashi Garami to Honey Hole (Saddle) Transition & Finish',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=z5-IBuqvQCU',
+    youtubeId: 'z5-IBuqvQCU',
+    channelName: '노기 주짓수 하체 시스템',
+    thumbnailUrl: 'https://i.ytimg.com/vi/z5-IBuqvQCU/hqdefault.jpg',
+    duration: '06:50',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '무릎 라인 리핑 & 허니홀 삼각 잠금 전환',
+    language: 'ko',
+  },
+  {
+    id: 'saddle-ko-3',
+    techniqueName: '하체관절기를 효과적으로 걸 수 있는 새들·허니홀(411) 가드 세팅 디테일',
+    techniqueNameEn: 'Effective Guard Setup for Saddle & Honey Hole Leg Lock Entries',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=OmhXBW4NkS0',
+    youtubeId: 'OmhXBW4NkS0',
+    channelName: '주짓수 테크닉 연구소',
+    thumbnailUrl: 'https://i.ytimg.com/vi/OmhXBW4NkS0/hqdefault.jpg',
+    duration: '08:10',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '상대 중심 붕괴 후 인사이드 엔트리 공간 확보',
+    language: 'ko',
+  },
+  {
+    id: 'saddle-en-1',
+    techniqueName: '새들 / 411 / 허니홀(인사이드 산카쿠) 포지션 완벽 입문 가이드',
+    techniqueNameEn: 'Intro to Saddle | 411 | Honey Hole | Inside Sankaku',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=RbuQjr3-F2I',
+    youtubeId: 'RbuQjr3-F2I',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/RbuQjr3-F2I/hqdefault.jpg',
+    duration: '08:30',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '무릎 각도 고정 & 세컨더리 레그 컨트롤',
+    language: 'en',
+  },
+  {
+    id: 'saddle-en-2',
+    techniqueName: '라클란 자일스의 가드에서 새들(411/허니홀) 엔트리 핵심 시스템 (Lachlan Giles)',
+    techniqueNameEn: 'Saddle Entry from Guard by Lachlan Giles',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=K5XhO7o5QN0',
+    youtubeId: 'K5XhO7o5QN0',
+    channelName: 'Absolute MMA',
+    thumbnailUrl: 'https://i.ytimg.com/vi/K5XhO7o5QN0/hqdefault.jpg',
+    duration: '07:20',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '언더훅 스쿠프 & K-가드에서 새들 직결 전환',
+    language: 'en',
+  },
+  {
+    id: 'saddle-en-3',
+    techniqueName: '허니홀(411/새들) 슬릭 엔트리와 타이트한 힐훅 피니시 메커니즘',
+    techniqueNameEn: 'Slick Entry to Honey Hole w/ Heel Hook Finish',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=-jY00HKXNlk',
+    youtubeId: '-jY00HKXNlk',
+    channelName: 'Knight Jiu-Jitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/-jY00HKXNlk/hqdefault.jpg',
+    duration: '06:40',
+    recommendedStartTime: '00:55',
+    recommendedStartSec: 55,
+    keyDetailTag: '발꿈치 노출 그립 & 엉덩이 브릿지 텐션',
+    language: 'en',
+  },
+  {
+    id: 'saddle-en-4',
+    techniqueName: '탑 하프가드에서 고확률 허니홀(새들/411) 백스텝 진입 기술',
+    techniqueNameEn: 'High Percentage Honey Hole Entry from Top Half Guard',
+    startPosition: '새들 / 411 / 허니홀',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=KKRPgVIFSlA',
+    youtubeId: 'KKRPgVIFSlA',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/KKRPgVIFSlA/hqdefault.jpg',
+    duration: '07:55',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '백스텝 회전 각도 & 인사이드 산카쿠 락킹',
+    language: 'en',
+  },
+  {
+    id: 'ashi-ko-1',
+    techniqueName: '하체관절기 아시가라미 포지션 종류와 스탠다드 아시 컨트롤 원리',
+    techniqueNameEn: 'Ashi Garami Position Types & Standard Ashi Control Mechanics',
+    startPosition: '아시 가라미 / 스탠다드 아시',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=rJW44wNCARI',
+    youtubeId: 'rJW44wNCARI',
+    channelName: '노기 주짓수 하체 시스템',
+    thumbnailUrl: 'https://i.ytimg.com/vi/rJW44wNCARI/hqdefault.jpg',
+    duration: '08:20',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '골반 클램프 압박 & 발목 아킬레스 포인트 고정',
+    language: 'ko',
+  },
+  {
+    id: 'ashi-en-1',
+    techniqueName: '스탠다드 아시가라미에서 가장 강력한 스트레이트 앵클락 피니시',
+    techniqueNameEn: 'Strongest Straight Ankle Lock - Ashi Garami',
+    startPosition: '아시 가라미 / 스탠다드 아시',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=34QwKNk0Cro',
+    youtubeId: '34QwKNk0Cro',
+    channelName: 'Jordan Teaches Jiujitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/34QwKNk0Cro/hqdefault.jpg',
+    duration: '07:35',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '하이 리스트 그립 & 견갑골 후인 브릿지 피니시',
+    language: 'en',
+  },
+  {
+    id: 'ashi-en-2',
+    techniqueName: '아시가라미 스트레이트 앵클락 방어 카운터 및 피니시 디테일',
+    techniqueNameEn: 'Finishing the Straight Ankle Lock & Ashi-Garami Countering Defense',
+    startPosition: '아시 가라미 / 스탠다드 아시',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=9jaSEuYbq_4',
+    youtubeId: '9jaSEuYbq_4',
+    channelName: 'Stephan Kesting',
+    thumbnailUrl: 'https://i.ytimg.com/vi/9jaSEuYbq_4/hqdefault.jpg',
+    duration: '08:05',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '부츠 방어 무력화 & 벨리다운 앵클락 전환',
+    language: 'en',
+  },
+  {
+    id: 'ashi-en-3',
+    techniqueName: '스트레이트 아시가라미 세팅 & 앵클락 레그락 시스템 마스터',
+    techniqueNameEn: 'Straight Ashi Garami + Straight Ankle Lock LegLock System',
+    startPosition: '아시 가라미 / 스탠다드 아시',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=pRnAMrkwXNg',
+    youtubeId: 'pRnAMrkwXNg',
+    channelName: 'Knight Jiu-Jitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/pRnAMrkwXNg/hqdefault.jpg',
+    duration: '07:15',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '무릎 조임 토크 & 엉덩이 신전 각도 제어',
+    language: 'en',
+  },
+  // ==========================================
+  // 28. 싱글렉 X 가드 / X 가드 / 더블렉 X 가드 / 신투신 / 싯업 가드
+  // ==========================================
+  {
+    id: 'slx-ko-1',
+    techniqueName: '[주짓수교본] 주짓수에서 가장 강력한 싱글렉 X가드 세팅과 컨트롤',
+    techniqueNameEn: 'Most Powerful Single Leg X Guard Setup & Control in BJJ',
+    startPosition: '싱글렉 X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=rG-6_WVQPkw',
+    youtubeId: 'rG-6_WVQPkw',
+    channelName: '주짓수교본',
+    thumbnailUrl: 'https://i.ytimg.com/vi/rG-6_WVQPkw/hqdefault.jpg',
+    duration: '08:15',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '골반 옆 발바닥 고정 & 안쪽 무릎 핀치 텐션',
+    language: 'ko',
+  },
+  {
+    id: 'slx-ko-2',
+    techniqueName: '[주짓수교본] 싱글렉 X가드 스윕의 모든 원리와 무릎 비틀기 피니시',
+    techniqueNameEn: 'Complete Principles of Single Leg X Guard Sweep',
+    startPosition: '싱글렉 X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=vRpssJ9foSs',
+    youtubeId: 'vRpssJ9foSs',
+    channelName: '주짓수교본',
+    thumbnailUrl: 'https://i.ytimg.com/vi/vRpssJ9foSs/hqdefault.jpg',
+    duration: '07:50',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '발목 오버훅 고정 후 외회전 힙 업 스윕',
+    language: 'ko',
+  },
+  {
+    id: 'slx-ko-3',
+    techniqueName: '초보자를 위한 싱글렉 X가드 세팅 방법, 기본 스윕 & 앵클락 연계',
+    techniqueNameEn: 'Single Leg X-Guard Setup, Sweep & Ankle Lock for Beginners',
+    startPosition: '싱글렉 X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=WcXbJ69bMhQ',
+    youtubeId: 'WcXbJ69bMhQ',
+    channelName: '주짓수 테크닉 아카데미',
+    thumbnailUrl: 'https://i.ytimg.com/vi/WcXbJ69bMhQ/hqdefault.jpg',
+    duration: '07:25',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '신투신 진입 후 엉덩이 띄우며 SLX 완성',
+    language: 'ko',
+  },
+  {
+    id: 'xguard-ko-1',
+    techniqueName: '싱글렉 X 및 X가드에서 상대 반응별 3가지 실전 스윕 시스템 (안산라텔주짓수)',
+    techniqueNameEn: '3 Practical Sweeps from Single Leg X & X-Guard',
+    startPosition: 'X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=e2feyTS8Ej0',
+    youtubeId: 'e2feyTS8Ej0',
+    channelName: '안산라텔주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/e2feyTS8Ej0/hqdefault.jpg',
+    duration: '08:40',
+    recommendedStartTime: '01:20',
+    recommendedStartSec: 80,
+    keyDetailTag: '반대쪽 발목 캐치 및 X-훅 스트레치 스윕',
+    language: 'ko',
+  },
+  {
+    id: 'xguard-en-1',
+    techniqueName: '마르셀로 가르시아 X-가드에서 백 테이크 및 스윕 마스터클래스 (Marcelo Garcia)',
+    techniqueNameEn: 'Marcelo Garcia: X-Guard to the Back & Sweep System',
+    startPosition: 'X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=l5FkoXGMBFU',
+    youtubeId: 'l5FkoXGMBFU',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/l5FkoXGMBFU/hqdefault.jpg',
+    duration: '07:30',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '상하 훅 다리 뻗기(Stretch)로 상대 베이스 붕괴',
+    language: 'en',
+  },
+  {
+    id: 'xguard-en-2',
+    techniqueName: '싱글렉 X가드 기본 양다리 스윕 & X-가드 전환 스윕 시스템',
+    techniqueNameEn: 'Single Leg X Guard Basic Sweep & X-Guard Transition Sweep',
+    startPosition: 'X 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=iXBLyYZLJAE',
+    youtubeId: 'iXBLyYZLJAE',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/iXBLyYZLJAE/hqdefault.jpg',
+    duration: '07:10',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '발 빼기 방어 대처 X-가드 언더훅 전환',
+    language: 'en',
+  },
+  {
+    id: 'shintoshin-ko-1',
+    techniqueName: '초보자를 위한 신투신(Shin-to-Shin) 가드 스윕 & 싱글렉X 진입',
+    techniqueNameEn: 'Shin-to-Shin Guard Sweep & Single Leg X Entry for Beginners',
+    startPosition: '신투신 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=LcjnzFqslmU',
+    youtubeId: 'LcjnzFqslmU',
+    channelName: '주짓수 기술 연구소',
+    thumbnailUrl: 'https://i.ytimg.com/vi/LcjnzFqslmU/hqdefault.jpg',
+    duration: '06:55',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '정강이 밀착 프레임 & 엉덩이 스쿠프 회전',
+    language: 'ko',
+  },
+  {
+    id: 'situp-ko-1',
+    techniqueName: '루카스 레프리의 30초 안에 상대를 넘기는 싯업 가드 싱글렉 스윕 디테일',
+    techniqueNameEn: 'Lucas Lepri Sit-Up Guard Single Leg Sweep Details',
+    startPosition: '싯업 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=tWAG2v73WTE',
+    youtubeId: 'tWAG2v73WTE',
+    channelName: '주짓수 번역 아카이브',
+    thumbnailUrl: 'https://i.ytimg.com/vi/tWAG2v73WTE/hqdefault.jpg',
+    duration: '07:20',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '라펠/발목 타이업 & 무릎 밀며 코너 돌기',
+    language: 'ko',
+  },
+  // ==========================================
+  // 29. 50/50 가드 & K-가드 (모던 레그 & 매트릭스)
+  // ==========================================
+  {
+    id: '5050-ko-1',
+    techniqueName: '50/50 가드를 완벽하게 만드는 3가지 필수 스윕 & 공격 옵션',
+    techniqueNameEn: '3 Essential Sweeps & Attacks to Master the 50/50 Guard',
+    startPosition: '50/50 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=taRxGcILjcw',
+    youtubeId: 'taRxGcILjcw',
+    channelName: '모던 주짓수 아카데미',
+    thumbnailUrl: 'https://i.ytimg.com/vi/taRxGcILjcw/hqdefault.jpg',
+    duration: '07:40',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '반대쪽 발목 제압 & 펜듈럼 스윙 컴업',
+    language: 'ko',
+  },
+  {
+    id: '5050-ko-2',
+    techniqueName: '50/50 가드의 모든 것: 그립 세팅부터 스윕·패스 방어까지 (노영암)',
+    techniqueNameEn: 'All About 50/50 Guard: Grips, Sweeps & Pass Defense',
+    startPosition: '50/50 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=NpLu5sKNmvk',
+    youtubeId: 'NpLu5sKNmvk',
+    channelName: '주짓수랩 노영암',
+    thumbnailUrl: 'https://i.ytimg.com/vi/NpLu5sKNmvk/hqdefault.jpg',
+    duration: '08:30',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '무릎 안쪽 각도 선점 & 베이스 무너뜨리기',
+    language: 'ko',
+  },
+  {
+    id: '5050-ko-3',
+    techniqueName: '50/50 가드에서 스윙 스윕, 가드 패스 및 백 테이크 연계 (안산라텔주짓수)',
+    techniqueNameEn: '50/50 Guard Pass, Swing Sweep & Back Take Sequence',
+    startPosition: '50/50 가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=XO-P5XYKiAo',
+    youtubeId: 'XO-P5XYKiAo',
+    channelName: '안산라텔주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/XO-P5XYKiAo/hqdefault.jpg',
+    duration: '08:00',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '레그 레이스 잠금 해제 후 백 테이크 전환',
+    language: 'ko',
+  },
+  {
+    id: '5050-en-1',
+    techniqueName: '레안드로 로의 50/50 가드 패스 핵심 밸런스 & 무릎 빼기 (Leandro Lo)',
+    techniqueNameEn: 'BJJ World Champion Leandro Lo: How to Pass 50/50 Guard',
+    startPosition: '50/50 가드',
+    category: '가드 패스',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=PakIjCVPq6A',
+    youtubeId: 'PakIjCVPq6A',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/PakIjCVPq6A/hqdefault.jpg',
+    duration: '06:50',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '칼라 포스팅 & 무릎 라인 탈출 롱스텝',
+    language: 'en',
+  },
+  {
+    id: 'kguard-ko-1',
+    techniqueName: 'K-가드에서 매트릭스(Matrix) 엔트리와 백 마운트 테이크 완벽 가이드',
+    techniqueNameEn: 'K-Guard to Matrix Entry & Back Mount Take Complete Guide',
+    startPosition: 'K-가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=s3To8lMlv9Y',
+    youtubeId: 's3To8lMlv9Y',
+    channelName: '김서복 주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/s3To8lMlv9Y/hqdefault.jpg',
+    duration: '07:45',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: 'K-훅 무릎 열기 & 오금 뒤 X-훅 매트릭스 진입',
+    language: 'ko',
+  },
+  {
+    id: 'kguard-ko-2',
+    techniqueName: 'K-가드 & 매트릭스 필수 4가지 상황별 스윕·백테이크 공식',
+    techniqueNameEn: '4 Essential Situations & Sweeps from K-Guard Matrix',
+    startPosition: 'K-가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=10cVpqXtKn0',
+    youtubeId: '10cVpqXtKn0',
+    channelName: '주짓수교본',
+    thumbnailUrl: 'https://i.ytimg.com/vi/10cVpqXtKn0/hqdefault.jpg',
+    duration: '08:15',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '상대 무릎 방향별 크랩라이드 & 백사이드 50/50 분기',
+    language: 'ko',
+  },
+  {
+    id: 'kguard-ko-3',
+    techniqueName: '기초적인 K-가드 셋업 가이드 및 하체·백 어택 전환 원리',
+    techniqueNameEn: 'Fundamental K-Guard Setup Guide & Back/Leg Transitions',
+    startPosition: 'K-가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=1Lm2sgs3wpU',
+    youtubeId: '1Lm2sgs3wpU',
+    channelName: '모던 주짓수 클래스',
+    thumbnailUrl: 'https://i.ytimg.com/vi/1Lm2sgs3wpU/hqdefault.jpg',
+    duration: '07:10',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '언더훅 발목 스쿠프 & 어깨 회전 각도 만들기',
+    language: 'ko',
+  },
+  {
+    id: 'kguard-en-1',
+    techniqueName: '모던 주짓수 K-가드에서 가장 완벽한 매트릭스 백 테이크',
+    techniqueNameEn: 'The Perfect Matrix Back Take from K Guard | Modern BJJ Guard',
+    startPosition: 'K-가드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=jJpPlNf2s5Y',
+    youtubeId: 'jJpPlNf2s5Y',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/jJpPlNf2s5Y/hqdefault.jpg',
+    duration: '07:25',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '힙 라인 컨트롤 & 매트릭스 훅 힙 다운 스윕',
+    language: 'en',
+  },
+  {
+    id: 'kguard-en-2',
+    techniqueName: '마이키 무수메시의 K-가드 3가지 핵심 공격 시스템 (Mikey Musumeci)',
+    techniqueNameEn: '3 Effective K-Guard Attacks | Mikey Musumeci Seminar Recap',
+    startPosition: 'K-가드',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=ayHmwddffgQ',
+    youtubeId: 'ayHmwddffgQ',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/ayHmwddffgQ/hqdefault.jpg',
+    duration: '08:05',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '백사이드 50/50 진입 & 매트릭스 백 테이크 이지선다',
+    language: 'en',
+  },
+  // ==========================================
+  // 30. Z-가드 / 니 쉴드 & 록다운 (하프가드 세부 포지션)
+  // ==========================================
+  {
+    id: 'zguard-ko-1',
+    techniqueName: '니쉴드(Z-가드) 하프가드 밑손 그립 파이팅과 프레임 유지의 중요성 (노영암)',
+    techniqueNameEn: 'Knee Shield Half Guard Bottom Hand Grip Fighting & Framing',
+    startPosition: 'Z-가드 / 니 쉴드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=HgyMotW_QqM',
+    youtubeId: 'HgyMotW_QqM',
+    channelName: '주짓수랩 노영암',
+    thumbnailUrl: 'https://i.ytimg.com/vi/HgyMotW_QqM/hqdefault.jpg',
+    duration: '07:50',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '크로스페이스 차단 프레임 & 언더훅 타이밍 확보',
+    language: 'ko',
+  },
+  {
+    id: 'zguard-en-1',
+    techniqueName: 'Z-가드 vs 니 쉴드 하프가드 구조 차이와 스윕·서브미션 활용법',
+    techniqueNameEn: 'Z-Guard VS. Knee Shield Half Guard Structure & Sweeps',
+    startPosition: 'Z-가드 / 니 쉴드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=NsRHHZk5Nx4',
+    youtubeId: 'NsRHHZk5Nx4',
+    channelName: 'Knight Jiu-Jitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/NsRHHZk5Nx4/hqdefault.jpg',
+    duration: '07:35',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '로우 니쉴드 vs 하이 니쉴드 거리 조절 및 기무라 연계',
+    language: 'en',
+  },
+  {
+    id: 'zguard-en-2',
+    techniqueName: '니 쉴드(Z-가드)를 공격 무기로 만드는 서브미션 & 스윕 연계',
+    techniqueNameEn: 'How to Make Knee Shield a Weapon: Submissions & Sweeps',
+    startPosition: 'Z-가드 / 니 쉴드',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=ATUzcKQk820',
+    youtubeId: 'ATUzcKQk820',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/ATUzcKQk820/hqdefault.jpg',
+    duration: '08:00',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '니 쉴드 킥오프 후 싱글렉 및 트라이앵글 전환',
+    language: 'en',
+  },
+  {
+    id: 'lockdown-ko-1',
+    techniqueName: '하프가드 록다운(Lockdown)에서 일렉트릭 체어 스윕 & 딥하프 연계',
+    techniqueNameEn: 'Half Guard Lockdown to Electric Chair Sweep & Deep Half',
+    startPosition: '록다운',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=UTsjiyAufGg',
+    youtubeId: 'UTsjiyAufGg',
+    channelName: '주짓수 하프가드 아카데미',
+    thumbnailUrl: 'https://i.ytimg.com/vi/UTsjiyAufGg/hqdefault.jpg',
+    duration: '07:30',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '록다운 다리 뻗기(Whip-up)로 상대 중심 띄우기',
+    language: 'ko',
+  },
+  {
+    id: 'lockdown-ko-2',
+    techniqueName: '록다운(Lockdown) 하프가드 다리 엮기 디테일과 언더훅 스윕 실전',
+    techniqueNameEn: 'Lockdown Half Guard Leg Entanglement & Underhook Sweep',
+    startPosition: '록다운',
+    category: '스윕',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=qcCnfkANsSQ',
+    youtubeId: 'qcCnfkANsSQ',
+    channelName: '낙성대 주짓수 클래스',
+    thumbnailUrl: 'https://i.ytimg.com/vi/qcCnfkANsSQ/hqdefault.jpg',
+    duration: '07:15',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '더블 언더훅(조스 클러치) 진입 후 올드스쿨 스윕',
+    language: 'ko',
+  },
+  // ==========================================
+  // 31. 칼라 앤 슬리브 가드 & 웜가드/라펠 가드 & 러버 가드
+  // ==========================================
+  {
+    id: 'cs-ko-1',
+    techniqueName: '칼라 앤 슬리브 가드 기본 세팅과 상대 밸런스 무너뜨리는 스윕',
+    techniqueNameEn: 'Collar and Sleeve Guard Setup & Off-Balancing Sweep',
+    startPosition: '칼라 앤 슬리브 가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=clTRgzNtTTM',
+    youtubeId: 'clTRgzNtTTM',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/clTRgzNtTTM/hqdefault.jpg',
+    duration: '07:20',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '깊은 깃 그립 당김 & 골반/이두근 발바닥 텐션 유지',
+    language: 'ko',
+  },
+  {
+    id: 'cs-ko-2',
+    techniqueName: '칼라 & 슬리브 가드 컨트롤에서 트라이앵글·오모플라타·스윕 연계',
+    techniqueNameEn: 'Collar & Sleeve Guard Control to Triangle, Omoplata & Sweep',
+    startPosition: '칼라 앤 슬리브 가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Up8Lqrvgfvc',
+    youtubeId: 'Up8Lqrvgfvc',
+    channelName: '이종진 주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/Up8Lqrvgfvc/hqdefault.jpg',
+    duration: '08:10',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '소매 당기며 엉덩이 회전으로 오모플라타/삼각 이지선다',
+    language: 'ko',
+  },
+  {
+    id: 'cs-en-1',
+    techniqueName: '칼라 앤 슬리브 가드에서 가드 패스 차단 및 고확률 스윕 2선',
+    techniqueNameEn: 'Guard Players - 2 High Percentage Sweeps in Collar Sleeve',
+    startPosition: '칼라 앤 슬리브 가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=776BVyZM504',
+    youtubeId: '776BVyZM504',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/776BVyZM504/hqdefault.jpg',
+    duration: '07:40',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '발목 트립 스윕 & 오버헤드 벌룬 스윕 연계',
+    language: 'en',
+  },
+  {
+    id: 'worm-ko-1',
+    techniqueName: '웜가드(라펠가드) 세팅 방법과 스윕 & 백테이크 6가지 실전 기술',
+    techniqueNameEn: 'Worm Guard Setup & 6 Practical Sweep and Back Take Variations',
+    startPosition: '웜가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=WLZ5OG--yeE',
+    youtubeId: 'WLZ5OG--yeE',
+    channelName: '브라운박 주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/WLZ5OG--yeE/hqdefault.jpg',
+    duration: '08:50',
+    recommendedStartTime: '01:20',
+    recommendedStartSec: 80,
+    keyDetailTag: '상대 도복 자락 다리 감기 & 라펠 패스 전환 스윕',
+    language: 'ko',
+  },
+  {
+    id: 'worm-ko-2',
+    techniqueName: '강력한 라펠 컨트롤 웜가드(Worm Guard) 기본 세팅과 펜듈럼 스윕',
+    techniqueNameEn: 'Powerful Lapel Control Worm Guard Setup & Pendulum Sweep',
+    startPosition: '웜가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=i42iNMNaXpE',
+    youtubeId: 'i42iNMNaXpE',
+    channelName: '이바름 주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/i42iNMNaXpE/hqdefault.jpg',
+    duration: '07:45',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '라펠 피딩 타이밍 & 무릎 각도 완전 봉쇄',
+    language: 'ko',
+  },
+  {
+    id: 'worm-en-1',
+    techniqueName: '웜가드(Worm Guard)에서 연결하는 5가지 필수 스윕 바리에이션',
+    techniqueNameEn: 'BJJ: 5 Sweeps From Worm Guard | Evolve University',
+    startPosition: '웜가드',
+    category: '스윕',
+    giType: 'Gi',
+    youtubeUrl: 'https://www.youtube.com/watch?v=xV3H9rZfHMI',
+    youtubeId: 'xV3H9rZfHMI',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/xV3H9rZfHMI/hqdefault.jpg',
+    duration: '08:15',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '링웜/스퀴드 전환 및 백 테이크 연결',
+    language: 'en',
+  },
+  {
+    id: 'rubber-ko-1',
+    techniqueName: '러버가드(Rubber Guard) 쉽게 묶는 법과 미션 컨트롤 셋업',
+    techniqueNameEn: 'How to Easily Set Up Rubber Guard & Mission Control',
+    startPosition: '러버 가드',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=8X44L4dll7I',
+    youtubeId: '8X44L4dll7I',
+    channelName: '최명규 주짓수',
+    thumbnailUrl: 'https://i.ytimg.com/vi/8X44L4dll7I/hqdefault.jpg',
+    duration: '07:35',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '고관절 외회전 각도 & 상대 자세 완전 제압',
+    language: 'ko',
+  },
+  {
+    id: 'rubber-ko-2',
+    techniqueName: '높은 방어력과 강력한 서브미션이 가능한 러버가드 핵심 공격 체계',
+    techniqueNameEn: 'Rubber Guard Core Submission System: Dead Orchard & Omoplata',
+    startPosition: '러버 가드',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=gSr7AwC3mRo',
+    youtubeId: 'gSr7AwC3mRo',
+    channelName: '노기 주짓수 클래스',
+    thumbnailUrl: 'https://i.ytimg.com/vi/gSr7AwC3mRo/hqdefault.jpg',
+    duration: '07:50',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '미션 컨트롤에서 오모플라타·고고플라타·암바 전환',
+    language: 'ko',
+  },
+  // ==========================================
+  // 32. 노스 사우스 컨트롤 / 곁누르기(케사 가타메) / 헤드쿼터 / 트럭 / 백 마운트 추가
+  // ==========================================
+  {
+    id: 'ns-ko-1',
+    techniqueName: '노스 사우스(남북) 포지션 압박 컨트롤 및 기무라 서브미션 연계',
+    techniqueNameEn: 'North-South Position Control & Kimura Submission Setup',
+    startPosition: '노스 사우스 컨트롤',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=XOqWNK9yZzI',
+    youtubeId: 'XOqWNK9yZzI',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/XOqWNK9yZzI/hqdefault.jpg',
+    duration: '06:55',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '상대 겨드랑이 파기 & 머리 스텝오버 기무라 피니시',
+    language: 'ko',
+  },
+  {
+    id: 'ns-ko-2',
+    techniqueName: '노스 사우스(남북) 포지션 프레임 형성 및 이스케이프 탈출 원리',
+    techniqueNameEn: 'North-South Position Framing & Escape Principles',
+    startPosition: '노스 사우스 컨트롤',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=McT6cojM7a8',
+    youtubeId: 'McT6cojM7a8',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/McT6cojM7a8/hqdefault.jpg',
+    duration: '07:10',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '골반 프레임 공간 확보 & 인버티드 가드 리커버리',
+    language: 'ko',
+  },
+  {
+    id: 'ns-en-1',
+    techniqueName: '타이트한 노스 사우스 컨트롤에서 매번 빠져나오는 이스케이프 비결',
+    techniqueNameEn: 'How I Escape North South EVERYTIME',
+    startPosition: '노스 사우스 컨트롤',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=CMgcU-SaIBY',
+    youtubeId: 'CMgcU-SaIBY',
+    channelName: 'Knight Jiu-Jitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/CMgcU-SaIBY/hqdefault.jpg',
+    duration: '07:30',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '겨드랑이 프레임 밀어올리기 & 터틀/가드 복구',
+    language: 'en',
+  },
+  {
+    id: 'kesa-ko-1',
+    techniqueName: '곁누르기(케사가타메) 탈출 후 기무라 리버설 카운터 연계',
+    techniqueNameEn: 'How To Do Kimura after Escape from Kesa Gatame',
+    startPosition: '곁누르기 / 케사 가타메',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=rALYjIWWASE',
+    youtubeId: 'rALYjIWWASE',
+    channelName: '주짓수 카운터 연구소',
+    thumbnailUrl: 'https://i.ytimg.com/vi/rALYjIWWASE/hqdefault.jpg',
+    duration: '07:15',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '팔꿈치 구출 후 브릿지 리버설 & 기무라 그립',
+    language: 'ko',
+  },
+  {
+    id: 'kesa-ko-2',
+    techniqueName: '곁누르기(Kesa Gatame) 압박 컨트롤 구조와 브릿지 이스케이프',
+    techniqueNameEn: 'Kesa Gatame Scarf Hold Control & Bridge Escape',
+    startPosition: '곁누르기 / 케사 가타메',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=eLndBCo75oo',
+    youtubeId: 'eLndBCo75oo',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/eLndBCo75oo/hqdefault.jpg',
+    duration: '06:50',
+    recommendedStartTime: '00:55',
+    recommendedStartSec: 55,
+    keyDetailTag: '상대 무게중심 회전 방향 읽기와 다리 걸기 백 테이크',
+    language: 'ko',
+  },
+  {
+    id: 'kesa-en-1',
+    techniqueName: '케사 가타메(곁누르기) 킬 시스템: 다리를 이용한 암바 & 아메리카나 피니시',
+    techniqueNameEn: 'The Kesa Gatame Kill System in BJJ',
+    startPosition: '곁누르기 / 케사 가타메',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=G0Xf_CJzE6M',
+    youtubeId: 'G0Xf_CJzE6M',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/G0Xf_CJzE6M/hqdefault.jpg',
+    duration: '08:05',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '횡격막 압박 & 앞다리 스텝오버 아메리카나/암바',
+    language: 'en',
+  },
+  {
+    id: 'hq-ko-1',
+    techniqueName: '헤드쿼터(HQ) 포지션 세팅 원리와 니컷·롱스텝 가드 패스 연계',
+    techniqueNameEn: 'Headquarters (HQ) Position Setup & Knee Cut / Long Step Pass',
+    startPosition: '헤드쿼터',
+    category: '가드 패스',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=qKWgxzNCI2A',
+    youtubeId: 'qKWgxzNCI2A',
+    channelName: '주짓수 패스 시스템',
+    thumbnailUrl: 'https://i.ytimg.com/vi/qKWgxzNCI2A/hqdefault.jpg',
+    duration: '07:45',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '상대 한쪽 다리 가두기(Sit on ankle) & 좌우 패스 분기',
+    language: 'ko',
+  },
+  {
+    id: 'hq-ko-2',
+    techniqueName: '헤드쿼터(HQ) 포지션에서 상대 무릎 제압 후 스매시 패스 피니시',
+    techniqueNameEn: 'Headquarters (HQ) Position to Smash Pass Finish',
+    startPosition: '헤드쿼터',
+    category: '가드 패스',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=DyVeWlrZ8-M',
+    youtubeId: 'DyVeWlrZ8-M',
+    channelName: '주짓수 패스 시스템',
+    thumbnailUrl: 'https://i.ytimg.com/vi/DyVeWlrZ8-M/hqdefault.jpg',
+    duration: '07:20',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '무릎 핀치 무너뜨리기 & 힙 스매시 사이드 안착',
+    language: 'ko',
+  },
+  {
+    id: 'hq-en-1',
+    techniqueName: '주짓수에서 가장 중요한 패스 허브: 헤드쿼터(HQ) 가드 패스 시스템',
+    techniqueNameEn: 'The MOST Important Passing Position in Jiu Jitsu: Headquarters',
+    startPosition: '헤드쿼터',
+    category: '가드 패스',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=zz8To63Oj5U',
+    youtubeId: 'zz8To63Oj5U',
+    channelName: 'Jordan Teaches Jiujitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/zz8To63Oj5U/hqdefault.jpg',
+    duration: '08:25',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '니컷·폴딩패스·X패스 3방향 체인 패싱',
+    language: 'en',
+  },
+  {
+    id: 'truck-en-1',
+    techniqueName: '터틀에서 트럭(The Truck) 포지션 쉬운 진입과 필수 서브미션 3선',
+    techniqueNameEn: 'EASY Truck Entry from Turtle and 3 MUST KNOW Submissions',
+    startPosition: '트럭 (The Truck)',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=QkBQoCka7z8',
+    youtubeId: 'QkBQoCka7z8',
+    channelName: 'Knight Jiu-Jitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/QkBQoCka7z8/hqdefault.jpg',
+    duration: '07:50',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '인버티드 롤 트럭 진입 & 카프슬라이서/바나나스플릿/백테이크',
+    language: 'en',
+  },
+  {
+    id: 'truck-en-2',
+    techniqueName: '10th Planet 트럭(Truck) 포지션 카프 슬라이서, 리스트락 & 트위스터',
+    techniqueNameEn: 'How to Use the 10th Planet Truck Position for Calf Slice & Twister',
+    startPosition: '트럭 (The Truck)',
+    category: '서브미션',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Qx9WAtnYgxw',
+    youtubeId: 'Qx9WAtnYgxw',
+    channelName: 'BJJ Fanatics',
+    thumbnailUrl: 'https://i.ytimg.com/vi/Qx9WAtnYgxw/hqdefault.jpg',
+    duration: '08:10',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '록다운 훅 유지 & 상체 비틀기 트위스터 피니시',
+    language: 'en',
+  },
+  {
+    id: 'bm-ko-3',
+    techniqueName: '백 마운트(백 포지션)에서 초크 방어하며 안전하게 탈출하는 핵심 원리',
+    techniqueNameEn: 'How to Escape Back Mount & Defend Rear Naked Choke',
+    startPosition: '백 마운트 / 백 컨트롤',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Prbby3P2vnQ',
+    youtubeId: 'Prbby3P2vnQ',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/Prbby3P2vnQ/hqdefault.jpg',
+    duration: '07:25',
+    recommendedStartTime: '01:05',
+    recommendedStartSec: 65,
+    keyDetailTag: '초크 핸드 파이팅 & 등 매트 밀착 슬라이드 탈출',
+    language: 'ko',
+  },
+  {
+    id: 'bm-ko-4',
+    techniqueName: '백 마운트 탈출의 비법: 내 머리 위치와 어깨 라인을 바꾸는 백 이스케이프',
+    techniqueNameEn: 'Secret to Back Mount Escape: Head Position & Shoulder Alignment',
+    startPosition: '백 마운트 / 백 컨트롤',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=fswTOH4OQxI',
+    youtubeId: 'fswTOH4OQxI',
+    channelName: '주짓수 마스터 클래스',
+    thumbnailUrl: 'https://i.ytimg.com/vi/fswTOH4OQxI/hqdefault.jpg',
+    duration: '07:40',
+    recommendedStartTime: '01:10',
+    recommendedStartSec: 70,
+    keyDetailTag: '언더훅 방향 판단 & 머리 매트 고정 후 훅 해제',
+    language: 'ko',
+  },
+  {
+    id: 'bm-ko-5',
+    techniqueName: '백 컨트롤(백 마운트) 상대 훅 무력화 및 가드 리커버리 연결',
+    techniqueNameEn: 'Back Control Hook Clearing & Guard Recovery Transition',
+    startPosition: '백 마운트 / 백 컨트롤',
+    category: '이스케이프',
+    giType: 'Both',
+    youtubeUrl: 'https://www.youtube.com/watch?v=RhZmfFlW1LQ',
+    youtubeId: 'RhZmfFlW1LQ',
+    channelName: '주짓수 기술 도서관',
+    thumbnailUrl: 'https://i.ytimg.com/vi/RhZmfFlW1LQ/hqdefault.jpg',
+    duration: '07:05',
+    recommendedStartTime: '01:00',
+    recommendedStartSec: 60,
+    keyDetailTag: '바텀 훅 벗겨내기 & 인사이드 회전 하프가드 전환',
+    language: 'ko',
+  },
 ];
 
 // Master tree 69 positions standard anchors
@@ -2081,33 +3034,348 @@ export function isSameYoutubeUrlOrId(
 }
 
 /**
- * 포지션/테마 매칭 판별 헬퍼
+ * 1차 정확 매칭 헬퍼: 선택한 시작 포지션/테마와 정확히 일치하는지 판별
  */
-export function matchesPositionOrTheme(
+export function matchesExactPosition(
   video: AiRecommendedVideoCandidate,
   targetPosition: string
 ): boolean {
   if (!targetPosition) return true;
   const normPos = targetPosition.toLowerCase().trim();
   const vPos = (video.startPosition || '').toLowerCase().trim();
-
   if (vPos === normPos) return true;
 
+  if (normPos.includes('새들') || normPos.includes('411') || normPos.includes('허니홀')) {
+    return vPos.includes('새들') || vPos.includes('411') || vPos.includes('허니홀');
+  }
+  if (normPos.includes('아시 가라미') || normPos.includes('스탠다드 아시')) {
+    return (
+      vPos.includes('아시 가라미') ||
+      vPos.includes('스탠다드 아시') ||
+      vPos.includes('새들') ||
+      vPos.includes('411') ||
+      vPos.includes('허니홀')
+    );
+  }
+  if (normPos.includes('싱글렉 x') || normPos === 'x 가드' || normPos.includes('더블렉 x')) {
+    return vPos.includes('싱글렉 x') || vPos === 'x 가드' || vPos.includes('더블렉 x');
+  }
+  if (normPos.includes('50/50')) {
+    return vPos.includes('50/50');
+  }
+  if (normPos.includes('k-가드') || normPos.includes('k가드')) {
+    return vPos.includes('k-가드') || vPos.includes('k가드');
+  }
+  if (normPos.includes('z-가드') || normPos.includes('니 쉴드')) {
+    return vPos.includes('z-가드') || vPos.includes('니 쉴드') || vPos === '하프 가드';
+  }
+  if (normPos.includes('록다운') || normPos.includes('락다운')) {
+    return vPos.includes('록다운') || vPos.includes('락다운') || vPos === '하프 가드';
+  }
+  if (normPos.includes('칼라 앤 슬리브')) {
+    return vPos.includes('칼라 앤 슬리브') || vPos.includes('스파이더') || vPos.includes('라쏘');
+  }
+  if (normPos.includes('웜가드') || normPos.includes('스퀴드')) {
+    return vPos.includes('웜가드') || vPos.includes('스퀴드') || vPos.includes('데라히바');
+  }
+  if (normPos.includes('러버 가드')) {
+    return vPos.includes('러버 가드') || vPos.includes('클로즈드');
+  }
+  if (normPos.includes('신투신') || normPos.includes('싯업')) {
+    return vPos.includes('신투신') || vPos.includes('싯업') || vPos.includes('버터플라이');
+  }
+  if (normPos.includes('노스 사우스')) {
+    return vPos.includes('노스 사우스') || vPos.includes('사이드 컨트롤');
+  }
+  if (normPos.includes('곁누르기') || normPos.includes('케사 가타메')) {
+    return (
+      vPos.includes('곁누르기') ||
+      vPos.includes('케사 가타메') ||
+      vPos.includes('사이드 컨트롤')
+    );
+  }
+  if (normPos.includes('헤드쿼터')) {
+    return (
+      vPos.includes('헤드쿼터') ||
+      vPos.includes('오픈 가드 탑') ||
+      vPos.includes('가드 패스')
+    );
+  }
+  if (normPos.includes('트럭')) {
+    return vPos.includes('트럭') || vPos.includes('터틀');
+  }
+  if (normPos === '마운트') {
+    return vPos === '마운트';
+  }
+  if (normPos.includes('마운트') && !normPos.includes('백')) {
+    return vPos === '마운트';
+  }
+  if (normPos.includes('백 마운트') || normPos.includes('백 컨트롤')) {
+    return vPos.includes('백 마운트') || vPos.includes('백 컨트롤');
+  }
+  if (normPos.includes('사이드 컨트롤') || normPos.includes('사이드')) {
+    return vPos.includes('사이드 컨트롤');
+  }
+  if (normPos.includes('니온밸리')) {
+    return vPos.includes('니온밸리');
+  }
+  if (normPos.includes('터틀') || normPos.includes('크루시픽스')) {
+    return vPos.includes('터틀') || vPos.includes('크루시픽스');
+  }
+  if (normPos.includes('클로즈드')) {
+    return vPos.includes('클로즈드');
+  }
+  if (normPos === '하프 가드' || normPos.includes('딥 하프') || normPos.includes('리버스 하프')) {
+    return vPos === '하프 가드' || vPos.includes('딥 하프') || vPos.includes('리버스 하프');
+  }
+  if (normPos.includes('버터플라이')) {
+    return vPos.includes('버터플라이');
+  }
+  if (normPos.includes('데라히바 / 라쏘')) {
+    return vPos.includes('데라히바') || vPos.includes('라쏘');
+  }
+  if (normPos.includes('모던 가드') || normPos.includes('베림보로')) {
+    return vPos.includes('데라히바') || vPos.includes('k-가드') || vPos.includes('50/50');
+  }
+  if (normPos.includes('데라히바')) {
+    return vPos.includes('데라히바');
+  }
+  if (normPos.includes('라쏘')) {
+    return vPos.includes('라쏘');
+  }
+  if (normPos.includes('스파이더')) {
+    return vPos.includes('스파이더');
+  }
+  if (normPos.includes('가드 패스')) {
+    return (
+      video.category === '가드 패스' ||
+      vPos.includes('헤드쿼터') ||
+      vPos.includes('오픈 가드 탑') ||
+      vPos.includes('가드 패스')
+    );
+  }
+  if (normPos.includes('서브미션')) {
+    return video.category === '서브미션';
+  }
+  if (normPos.includes('가드 리텐션') || normPos.includes('리커버리')) {
+    return video.category.includes('가드') || video.category === '스윕' || vPos.includes('가드');
+  }
+  if (normPos.includes('헤드락') || normPos.includes('길로틴')) {
+    return vPos.includes('헤드락');
+  }
+  if (normPos.includes('스탠딩') || normPos.includes('레슬링') || normPos.includes('테이크다운')) {
+    return vPos.includes('스탠딩') || vPos.includes('레슬링') || video.giType === '레슬링';
+  }
+  if (normPos.includes('유도')) {
+    return vPos.includes('유도') || video.giType === '유도' || video.category.includes('유도');
+  }
+  return false;
+}
+
+/**
+ * 포지션/테마 매칭 판별 헬퍼 (동일 시작 포지션 또는 직계 동일 주제 패밀리만 엄격 매칭)
+ * 절대 다른 무관한 주제(예: 하체/가드 포지션인데 테이크다운 등)와 매칭하지 않음
+ */
+export function matchesPositionOrTheme(
+  video: AiRecommendedVideoCandidate,
+  targetPosition: string
+): boolean {
+  if (!targetPosition) return true;
+  if (matchesExactPosition(video, targetPosition)) return true;
+
+  const normPos = targetPosition.toLowerCase().trim();
+  const vPos = (video.startPosition || '').toLowerCase().trim();
+
+  // 1. 하체 엔탱글먼트 패밀리 (새들 / 411 / 허니홀 / 아시 가라미 / 50/50 / K-가드)
+  if (
+    normPos.includes('새들') ||
+    normPos.includes('411') ||
+    normPos.includes('허니홀') ||
+    normPos.includes('아시 가라미') ||
+    normPos.includes('스탠다드 아시')
+  ) {
+    return (
+      vPos.includes('새들') ||
+      vPos.includes('411') ||
+      vPos.includes('허니홀') ||
+      vPos.includes('아시 가라미') ||
+      vPos.includes('50/50') ||
+      vPos.includes('싱글렉 x')
+    );
+  }
+
+  // 2. 50/50 & K-가드 모던 레그/매트릭스 패밀리
+  if (normPos.includes('50/50') || normPos.includes('k-가드') || normPos.includes('k가드')) {
+    return (
+      vPos.includes('50/50') ||
+      vPos.includes('k-가드') ||
+      vPos.includes('새들') ||
+      vPos.includes('아시 가라미') ||
+      vPos.includes('데라히바')
+    );
+  }
+
+  // 3. 싱글렉 X / X 가드 / 더블렉 X / 신투신 / 싯업 / 버터플라이 (언더니스 훅 & 엘리베이션 패밀리)
+  if (
+    normPos.includes('싱글렉 x') ||
+    normPos === 'x 가드' ||
+    normPos.includes('더블렉 x') ||
+    normPos.includes('신투신')
+  ) {
+    return (
+      vPos.includes('싱글렉 x') ||
+      vPos === 'x 가드' ||
+      vPos.includes('신투신') ||
+      vPos.includes('버터플라이') ||
+      vPos.includes('아시 가라미')
+    );
+  }
+
+  if (normPos.includes('버터플라이') || normPos.includes('싯업')) {
+    return (
+      vPos.includes('버터플라이') ||
+      vPos.includes('싯업') ||
+      vPos.includes('신투신') ||
+      vPos.includes('싱글렉 x')
+    );
+  }
+
+  // 4. 하프 가드 패밀리 (하프 가드 / 딥 하프 / 리버스 하프 / Z-가드 / 니 쉴드 / 록다운)
+  if (
+    normPos.includes('하프') ||
+    normPos.includes('z-가드') ||
+    normPos.includes('니 쉴드') ||
+    normPos.includes('록다운') ||
+    normPos.includes('락다운')
+  ) {
+    return (
+      vPos.includes('하프') ||
+      vPos.includes('z-가드') ||
+      vPos.includes('니 쉴드') ||
+      vPos.includes('록다운')
+    );
+  }
+
+  // 5. 클로즈드 가드 & 러버 가드 & 기타 가드 패밀리
+  if (normPos.includes('클로즈드') || normPos.includes('러버 가드') || normPos.includes('기타 가드')) {
+    return (
+      vPos.includes('클로즈드') ||
+      vPos.includes('러버 가드') ||
+      vPos.includes('칼라 앤 슬리브')
+    );
+  }
+
+  // 6. 오픈 가드 도복 그립 패밀리 (데라히바 / 리버스 데라히바 / 라쏘 / 스파이더 / 칼라 앤 슬리브 / 웜가드 / 스퀴드)
+  if (normPos.includes('칼라 앤 슬리브')) {
+    return (
+      vPos.includes('칼라 앤 슬리브') ||
+      vPos.includes('스파이더') ||
+      vPos.includes('라쏘') ||
+      vPos.includes('데라히바')
+    );
+  }
+  if (normPos.includes('웜가드') || normPos.includes('스퀴드')) {
+    return (
+      vPos.includes('웜가드') ||
+      vPos.includes('데라히바') ||
+      vPos.includes('라쏘') ||
+      vPos.includes('칼라 앤 슬리브')
+    );
+  }
+  if (normPos.includes('라쏘')) {
+    return vPos.includes('라쏘') || vPos.includes('스파이더') || vPos.includes('칼라 앤 슬리브');
+  }
+  if (normPos.includes('스파이더')) {
+    return vPos.includes('스파이더') || vPos.includes('라쏘') || vPos.includes('칼라 앤 슬리브');
+  }
+  if (
+    normPos.includes('모던 가드') ||
+    normPos.includes('베림보로') ||
+    normPos.includes('데라히바')
+  ) {
+    return (
+      vPos.includes('데라히바') ||
+      vPos.includes('k-가드') ||
+      vPos.includes('라쏘') ||
+      vPos.includes('스파이더') ||
+      vPos.includes('웜가드')
+    );
+  }
+
+  // 7. 상위 압박 컨트롤 패밀리 (사이드 컨트롤 / 노스 사우스 / 곁누르기·케사 가타메 / 니온밸리 / 마운트)
+  if (
+    normPos.includes('노스 사우스') ||
+    normPos.includes('곁누르기') ||
+    normPos.includes('케사 가타메') ||
+    normPos.includes('사이드')
+  ) {
+    return (
+      vPos.includes('사이드') ||
+      vPos.includes('노스 사우스') ||
+      vPos.includes('곁누르기') ||
+      vPos.includes('케사 가타메') ||
+      vPos.includes('니온밸리')
+    );
+  }
+  if (normPos.includes('니온밸리') || normPos.includes('니온 벨리')) {
+    return vPos.includes('니온밸리') || vPos.includes('사이드') || vPos === '마운트';
+  }
+  if (normPos === '마운트') {
+    return vPos === '마운트' || vPos.includes('니온밸리');
+  }
+  if (normPos.includes('마운트') && !normPos.includes('백')) {
+    return (vPos === '마운트' || video.category === '이스케이프') && !vPos.includes('백');
+  }
+
+  // 8. 백 마운트 / 터틀 / 트럭 / 크루시픽스 패밀리
+  if (
+    normPos.includes('백 마운트') ||
+    normPos.includes('백 컨트롤') ||
+    normPos.includes('백포지션')
+  ) {
+    return vPos.includes('백') || vPos.includes('트럭') || vPos.includes('터틀');
+  }
+  if (normPos.includes('터틀') || normPos.includes('크루시픽스') || normPos.includes('트럭')) {
+    return vPos.includes('터틀') || vPos.includes('트럭') || vPos.includes('백') || vPos.includes('헤드락');
+  }
+
+  // 9. 헤드쿼터 & 가드 패스 패밀리
+  if (
+    normPos.includes('헤드쿼터') ||
+    normPos.includes('가드 패스') ||
+    normPos.includes('압박 패스') ||
+    normPos.includes('스매시') ||
+    normPos.includes('패스')
+  ) {
+    return (
+      vPos.includes('헤드쿼터') ||
+      video.category === '가드 패스' ||
+      vPos.includes('오픈 가드 탑') ||
+      vPos.includes('가드 패스')
+    );
+  }
+
+  // 10. 스탠딩 / 레슬링 / 유도 / 프론트 헤드락
   if (normPos.includes('유도')) {
     return (
       video.giType === '유도' ||
       video.category.includes('유도') ||
-      video.startPosition.includes('유도')
+      vPos.includes('유도')
     );
   }
   if (normPos.includes('레슬링') || normPos.includes('스탠딩') || normPos.includes('테이크다운')) {
     return (
       video.giType === '레슬링' ||
       video.category === '테이크다운' ||
-      video.startPosition.includes('스탠딩') ||
-      video.startPosition.includes('레슬링')
+      vPos.includes('스탠딩') ||
+      vPos.includes('레슬링')
     );
   }
+  if (normPos.includes('헤드락') || normPos.includes('길로틴')) {
+    return vPos.includes('헤드락') || vPos.includes('터틀');
+  }
+
+  // 11. 종합 테마 (서브미션 스페셜, 가드 리텐션 등)
   if (normPos.includes('자유 테마')) {
     return true;
   }
@@ -2121,68 +3389,8 @@ export function matchesPositionOrTheme(
     return (
       video.category.includes('가드') ||
       video.category === '스윕' ||
-      video.startPosition.includes('가드')
+      vPos.includes('가드')
     );
-  }
-  if (
-    normPos.includes('가드 패스') ||
-    normPos.includes('압박 패스') ||
-    normPos.includes('스매시') ||
-    normPos.includes('패스')
-  ) {
-    return (
-      video.category === '가드 패스' ||
-      video.startPosition.includes('오픈 가드 탑') ||
-      video.startPosition.includes('가드 패스')
-    );
-  }
-  if (
-    normPos.includes('모던 가드') ||
-    normPos.includes('베림보로') ||
-    normPos.includes('데라히바')
-  ) {
-    return (
-      video.startPosition.includes('데라히바') ||
-      video.startPosition.includes('라쏘') ||
-      video.startPosition.includes('스파이더')
-    );
-  }
-  if (normPos === '마운트' || (normPos.includes('마운트') && !normPos.includes('백'))) {
-    return video.startPosition.includes('마운트') && !video.startPosition.includes('백');
-  }
-  if (
-    normPos.includes('백 마운트') ||
-    normPos.includes('백 컨트롤') ||
-    normPos.includes('백포지션')
-  ) {
-    return video.startPosition.includes('백');
-  }
-  if (normPos.includes('터틀') || normPos.includes('크루시픽스')) {
-    return video.startPosition.includes('터틀');
-  }
-  if (normPos.includes('버터플라이')) {
-    return video.startPosition.includes('버터플라이');
-  }
-  if (normPos.includes('니온밸리') || normPos.includes('니온 벨리')) {
-    return video.startPosition.includes('니온밸리');
-  }
-  if (normPos.includes('사이드')) {
-    return video.startPosition.includes('사이드');
-  }
-  if (normPos.includes('하프')) {
-    return video.startPosition.includes('하프');
-  }
-  if (normPos.includes('클로즈드')) {
-    return video.startPosition.includes('클로즈드');
-  }
-  if (normPos.includes('라쏘')) {
-    return video.startPosition.includes('라쏘');
-  }
-  if (normPos.includes('스파이더')) {
-    return video.startPosition.includes('스파이더');
-  }
-  if (normPos.includes('헤드락') || normPos.includes('길로틴')) {
-    return video.startPosition.includes('헤드락');
   }
 
   return vPos.includes(normPos) || normPos.includes(vPos);
@@ -2260,8 +3468,9 @@ export interface PickUniqueVideosParams {
 }
 
 /**
- * 3. URL 중복 검사 기반 영상 추천/교체 핵심 함수
- * "검색했는데 URL이 같은가? -> Yes면 제외(continue), No면 채택!"
+ * 3. URL 중복 검사 및 동일 시작 포지션/주제 보장 핵심 함수
+ * - 새로고침 시 다른 무관한 포지션(예: 새들/허니홀인데 테이크다운)을 절대 가져오지 않고,
+ *   항상 targetPosition(동일 시작 포지션 및 직계 동일 주제) 내에서만 중복 없는 영상을 선정합니다.
  */
 export function pickUniqueVideos({
   allVideosPool,
@@ -2304,7 +3513,7 @@ export function pickUniqueVideos({
     dateRefreshOffsetMap.set(dateStr, refreshExtraOffset);
   }
 
-  // [Step 1] 언어 필터 엄격 적용 (버그 수정: 제목이 아닌 명시적 lang 태그 및 채널 언어 기준)
+  // [Step 1] 언어 필터 적용
   const langFilteredPool = allVideosPool.filter((video) => {
     const vLang = getEffectiveVideoLang(video);
     if (settings.language === 'ko') return vLang === 'ko';
@@ -2312,7 +3521,7 @@ export function pickUniqueVideos({
     return true; // 'all'인 경우 모두 허용
   });
 
-  // [Step 2] 요일별 스타일(Gi/No-Gi/Wrestling/Judo) 엄격 매칭
+  // [Step 2] 요일별 스타일(Gi/No-Gi/Wrestling/Judo) 매칭
   const styleFilteredPool = langFilteredPool.filter((video) => {
     const vStyle = (video as any).style || video.giType;
     const vPosGroup = (video as any).positionGroup || '';
@@ -2349,20 +3558,20 @@ export function pickUniqueVideos({
   const isUrlDuplicate = (videoUrl: string): boolean => {
     const key = getNormalizedVideoKey(videoUrl);
     if (!key) return true;
-    if (loggedUrls.has(key)) return true;            // 1) 수업일지 중복 방지 기간 내 영상이면 제외 (Yes)
-    if (hardCurrentScreenKeys.has(key)) return true; // 2) 현재 교체 직전 화면에 떠 있던 카드면 절대 제외 (Yes)
-    if (currentlyAssignedUrls.has(key)) return true; // 3) 다른 요일/옆 카드에 이미 떠 있는 영상이면 제외 (Yes)
-    if (recordToSeenHistory && seenUrlsHistory.has(key)) return true; // 4) '다른 영상/영상 교체'로 이미 봤던 영상이면 제외 (Yes)
-    return false;                                    // 전부 아니면 새 영상! (No -> 보여주기)
+    if (loggedUrls.has(key)) return true;            // 1) 수업일지 중복 방지 기간 내 영상이면 제외
+    if (hardCurrentScreenKeys.has(key)) return true; // 2) 현재 교체 직전 화면에 떠 있던 카드면 절대 제외
+    if (currentlyAssignedUrls.has(key)) return true; // 3) 다른 요일/옆 카드에 이미 떠 있는 영상이면 제외
+    if (recordToSeenHistory && seenUrlsHistory.has(key)) return true; // 4) '다른 영상/영상 교체'로 이미 봤던 영상이면 제외
+    return false;
   };
 
-  // 다른 요일에만 배치되어 있고 현재 날짜에서는 한 번도 본 적 없는지 판별하는 헬퍼
+  // 현재 날짜에서는 아직 한 번도 본 적 없는지 판별하는 헬퍼 (다른 요일 배정 여부보다 동일 포지션 유지를 우선할 때 사용)
   const isUnseenOnCurrentDay = (videoUrl: string): boolean => {
     const key = getNormalizedVideoKey(videoUrl);
     if (!key) return false;
     if (loggedUrls.has(key)) return false;
     if (hardCurrentScreenKeys.has(key)) return false;
-    if (seenUrlsHistory.has(key)) return false;
+    if (recordToSeenHistory && seenUrlsHistory.has(key)) return false;
     return true;
   };
 
@@ -2374,7 +3583,7 @@ export function pickUniqueVideos({
     return vType === targetType;
   };
 
-  // 날짜별 + 새로고침 횟수별 회전 시드 (매 클릭마다 시작 인덱스가 전진하여 절대 같은 순서로 반복되지 않음)
+  // 날짜별 + 새로고침 횟수별 회전 시드
   const rotatePoolByDate = (pool: AiRecommendedVideoCandidate[]): AiRecommendedVideoCandidate[] => {
     if (pool.length <= 1) return pool;
     const parts = (dateStr || '').split('-').map(Number);
@@ -2387,23 +3596,9 @@ export function pickUniqueVideos({
   };
 
   const rotatedStylePool = rotatePoolByDate(styleFilteredPool);
+  const rotatedLangPool = rotatePoolByDate(langFilteredPool);
+  const rotatedAllPool = rotatePoolByDate(allVideosPool);
 
-  // 유도/레슬링처럼 전용 영상 풀이 상대적으로 작은 요일에서 모든 전용 영상을 다 본 경우,
-  // 복장 호환성을 지키는 보조 풀(유도 -> Gi/Both, 레슬링 -> No-Gi/Both) 준비
-  const compatibleSecondaryPool = rotatePoolByDate(
-    langFilteredPool.filter((video) => {
-      const vStyle = (video as any).style || video.giType;
-      if (normStyle === 'judo' || normStyle === 'gi') {
-        return vStyle === 'Gi' || vStyle === 'Both' || vStyle === '유도';
-      }
-      if (normStyle === 'wrestling' || normStyle === 'no-gi' || normStyle === 'nogi') {
-        return vStyle === 'No-Gi' || vStyle === 'Both' || vStyle === '레슬링';
-      }
-      return true;
-    })
-  );
-
-  // [Step 4] 1차 탐색: 목표 포지션 + 기술 성격 + URL 비중복 조건으로 검색
   const candidates: AiRecommendedVideoCandidate[] = [];
   const candidateKeys = new Set<string>();
   const candidateTitles = new Set<string>();
@@ -2421,96 +3616,105 @@ export function pickUniqueVideos({
     candidates.push(video);
   };
 
-  const checkPosMatch = (video: AiRecommendedVideoCandidate): boolean => {
+  const checkExactPos = (video: AiRecommendedVideoCandidate): boolean => {
     return (
       (video as any).position === targetPosition ||
       (video as any).theme === targetPosition ||
-      matchesPositionOrTheme(video, targetPosition)
+      matchesExactPosition(video, targetPosition)
     );
   };
 
+  const checkFamilyPos = (video: AiRecommendedVideoCandidate): boolean => {
+    return checkExactPos(video) || matchesPositionOrTheme(video, targetPosition);
+  };
+
+  // ==========================================
+  // [Step 4] 동일 시작 포지션(Exact Position) 최우선 탐색
+  // 다른 포지션(테이크다운 등)으로 절대 넘어가지 않고 동일 시작 포지션 영상을 먼저 채움
+  // ==========================================
+
+  // 4-1: 정확히 일치하는 시작 포지션 + 성격 일치 + 요일 스타일/언어 일치 + 주간/히스토리 비중복
   rotatedStylePool.forEach((video) => {
     const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-    if (checkPosMatch(video) && isTypeMatch(video) && !isUrlDuplicate(urlStr)) {
+    if (checkExactPos(video) && isTypeMatch(video) && !isUrlDuplicate(urlStr)) {
       pushUniqueCandidate(video);
     }
   });
 
-  // [Step 5] 스마트 폴백 1단계: 해당 포지션에 해당 스타일(예: 베림보로 + No-Gi) 영상이 부족할 때
-  // 똑같은 영상을 중복해서 보여주는 대신, 같은 스타일(No-Gi)의 다른 연관 기술에서 비중복 URL을 찾음
+  // 4-2: 정확히 일치하는 시작 포지션 + 성격 일치 + 요일 스타일/언어 일치 + 오늘 미노출 (다른 요일에 떠 있더라도 다른 포지션을 가져오는 것보다 동일 포지션 유지!)
   if (candidates.length < countToPick) {
     rotatedStylePool.forEach((video) => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      if (isTypeMatch(video) && !isUrlDuplicate(urlStr)) {
+      if (checkExactPos(video) && isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
         pushUniqueCandidate(video);
       }
     });
   }
 
-  // 성격 필터(targetType)가 좁아서 여전히 부족한 경우, 같은 스타일(styleFilteredPool) 내 모든 비중복 URL로 확장
+  // 4-3: 정확히 일치하는 시작 포지션 + 요일 스타일/언어 일치 (성격 필터가 좁을 때 동일 포지션의 다른 성격 허용)
   if (candidates.length < countToPick) {
     rotatedStylePool.forEach((video) => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      if (!isUrlDuplicate(urlStr)) {
-        pushUniqueCandidate(video);
-      }
-    });
-  }
-
-  // [Step 5-B] '다른 영상 3개' 클릭 시, 다른 요일(월~토)에 배정된 영상 때문에 현재 날짜에서 아직 한 번도 안 본 영상이 막혀 있는 경우:
-  // 이미 본 영상을 중복 노출하는 것보다 현재 날짜에서 한 번도 본 적 없는(seenUrlsHistory에 없는) 새 영상을 우선 채택!
-  if (recordToSeenHistory && candidates.length < countToPick) {
-    rotatedStylePool.forEach((video) => {
-      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      if (checkPosMatch(video) && isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
+      if (checkExactPos(video) && !isUrlDuplicate(urlStr)) {
         pushUniqueCandidate(video);
       }
     });
     if (candidates.length < countToPick) {
       rotatedStylePool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-        if (isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
+        if (checkExactPos(video) && isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+  }
+
+  // 4-4: 사용자가 특정 세부 포지션(예: 노기 위주 포지션을 도복 요일에 선택, 또는 도복 전용 가드를 노기 요일에 선택)을 직접 지정한 경우,
+  // 엉뚱한 포지션을 가져오지 않고 해당 정확한 포지션(checkExactPos)의 영상을 언어 풀 / 전체 풀에서 우선 확보
+  if (candidates.length < countToPick) {
+    rotatedLangPool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      if (checkExactPos(video) && isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
+        pushUniqueCandidate(video);
+      }
+    });
+    if (candidates.length < countToPick) {
+      rotatedLangPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (checkExactPos(video) && isUnseenOnCurrentDay(urlStr)) {
           pushUniqueCandidate(video);
         }
       });
     }
     if (candidates.length < countToPick) {
-      rotatedStylePool.forEach((video) => {
+      rotatedAllPool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-        if (isUnseenOnCurrentDay(urlStr)) {
+        if (checkExactPos(video) && isUnseenOnCurrentDay(urlStr)) {
           pushUniqueCandidate(video);
         }
       });
     }
   }
 
-  // [Step 5-C] 유도/레슬링 등 전용 스타일 풀이 3개 미만으로 남았을 때 복장 호환 풀(유도->Gi/Both, 레슬링->No-Gi/Both)에서 미노출 영상 보충
+  // ==========================================
+  // [Step 5] 해당 시작 포지션(checkExactPos)의 미노출 후보를 다 본 경우:
+  // 다른 포지션(심지어 인접 포지션)으로 넘어가기 전에, 현재 화면에 떠 있는 카드들(hardCurrentScreenKeys)과
+  // 수업일지(loggedUrls)를 제외한 '동일 시작 포지션(checkExactPos)'의 가장 오래전에 본 영상(FIFO)을 먼저 순환!
+  // ==========================================
   if (candidates.length < countToPick) {
-    compatibleSecondaryPool.forEach((video) => {
-      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      if (!isUrlDuplicate(urlStr)) {
-        pushUniqueCandidate(video);
-      }
-    });
-    if (recordToSeenHistory && candidates.length < countToPick) {
-      compatibleSecondaryPool.forEach((video) => {
-        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-        if (isUnseenOnCurrentDay(urlStr)) {
-          pushUniqueCandidate(video);
-        }
-      });
-    }
-  }
-
-  // [Step 6] 스마트 폴백 2단계: '다른 영상 3개 / 영상 교체'를 아주 많이 눌러서 전체 DB의 모든 후보를 다 봤을 때
-  // 현재 화면에 떠 있는 카드들(hardCurrentScreenKeys)과 수업일지 등록 영상(loggedUrls)은 절대 겹치지 않게 유지하되,
-  // 가장 오래전에 봤던 기록(FIFO)부터 순환하며 채움 (직전 화면의 영상이 다시 나오는 현상 완벽 차단)
-  if (recordToSeenHistory && candidates.length < countToPick) {
     const oldestFirstKeys = [...seenUrlsOrder];
-    seenUrlsHistory.clear();
-    seenUrlsOrder.length = 0;
-    hardCurrentScreenKeys.forEach((k) => recordUrlToSeenHistory(k));
-    candidateKeys.forEach((k) => recordUrlToSeenHistory(k));
+
+    allVideosPool.forEach((video) => {
+      if (checkExactPos(video)) {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const k = getNormalizedVideoKey(urlStr);
+        if (k && !hardCurrentScreenKeys.has(k) && !candidateKeys.has(k)) {
+          seenUrlsHistory.delete(k);
+          const idx = seenUrlsOrder.indexOf(k);
+          if (idx !== -1) seenUrlsOrder.splice(idx, 1);
+        }
+      }
+    });
 
     const getRecycleAgeRank = (video: AiRecommendedVideoCandidate): number => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
@@ -2522,61 +3726,120 @@ export function pickUniqueVideos({
     const recycledStylePool = [...rotatedStylePool].sort(
       (a, b) => getRecycleAgeRank(a) - getRecycleAgeRank(b)
     );
+    const recycledLangPool = [...rotatedLangPool].sort(
+      (a, b) => getRecycleAgeRank(a) - getRecycleAgeRank(b)
+    );
+    const recycledAllPool = [...rotatedAllPool].sort(
+      (a, b) => getRecycleAgeRank(a) - getRecycleAgeRank(b)
+    );
 
-    // 6-1: 목표 포지션 + 다른 요일 비중복 우선
     recycledStylePool.forEach((video) => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
       const key = getNormalizedVideoKey(urlStr);
       if (
-        checkPosMatch(video) &&
+        checkExactPos(video) &&
         isTypeMatch(video) &&
         !loggedUrls.has(key) &&
-        !hardCurrentScreenKeys.has(key) &&
-        !currentlyAssignedUrls.has(key)
+        !hardCurrentScreenKeys.has(key)
       ) {
         pushUniqueCandidate(video);
       }
     });
 
-    // 6-2: 동일 스타일 + 다른 요일 비중복
     if (candidates.length < countToPick) {
       recycledStylePool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
         const key = getNormalizedVideoKey(urlStr);
         if (
+          checkExactPos(video) &&
           !loggedUrls.has(key) &&
-          !hardCurrentScreenKeys.has(key) &&
-          !currentlyAssignedUrls.has(key)
+          !hardCurrentScreenKeys.has(key)
         ) {
           pushUniqueCandidate(video);
         }
       });
     }
 
-    // 6-3: 직전 화면(hardCurrentScreenKeys) 및 수업일지(loggedUrls)만 제외하고 동일 스타일에서 가장 오래전 영상 채택
     if (candidates.length < countToPick) {
-      recycledStylePool.forEach((video) => {
+      recycledLangPool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
         const key = getNormalizedVideoKey(urlStr);
-        if (!loggedUrls.has(key) && !hardCurrentScreenKeys.has(key)) {
+        if (
+          checkExactPos(video) &&
+          !loggedUrls.has(key) &&
+          !hardCurrentScreenKeys.has(key)
+        ) {
           pushUniqueCandidate(video);
         }
       });
     }
 
-    // 6-4: 복장 호환 풀에서 직전 화면 및 수업일지 제외 채택
     if (candidates.length < countToPick) {
-      compatibleSecondaryPool.forEach((video) => {
+      recycledAllPool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
         const key = getNormalizedVideoKey(urlStr);
-        if (!loggedUrls.has(key) && !hardCurrentScreenKeys.has(key)) {
+        if (
+          checkExactPos(video) &&
+          !loggedUrls.has(key) &&
+          !hardCurrentScreenKeys.has(key)
+        ) {
           pushUniqueCandidate(video);
         }
       });
     }
   }
 
-  // 최종 선택된 영상들의 URL을 '이미 노출된 URL'로 즉시 등록하여 다음 요일 및 다음 클릭과 절대 겹치지 않게 함
+  // ==========================================
+  // [Step 6] 만약 특정 세부 포지션의 전체 영상 수가 5개 이하라서 직전 화면 3개를 제외하면
+  // 1~2자리가 부족한 경우에만, 직계 동일 주제 패밀리(checkFamilyPos)에서 보충
+  // ==========================================
+  if (candidates.length < countToPick) {
+    rotatedStylePool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      if (checkFamilyPos(video) && isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
+        pushUniqueCandidate(video);
+      }
+    });
+    if (candidates.length < countToPick) {
+      rotatedStylePool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (checkFamilyPos(video) && isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+    if (candidates.length < countToPick) {
+      rotatedLangPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (checkFamilyPos(video) && isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+    if (candidates.length < countToPick) {
+      rotatedAllPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (checkFamilyPos(video) && isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+    if (candidates.length < countToPick) {
+      rotatedAllPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const key = getNormalizedVideoKey(urlStr);
+        if (
+          checkFamilyPos(video) &&
+          !loggedUrls.has(key) &&
+          !hardCurrentScreenKeys.has(key)
+        ) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+  }
+
+  // 최종 선택된 영상들의 URL을 '이미 노출된 URL'로 즉시 등록
   const selected = candidates.slice(0, countToPick).map((v) => ({
     ...v,
     startPosition: targetPosition || v.startPosition,
