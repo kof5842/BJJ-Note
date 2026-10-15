@@ -106,6 +106,12 @@ export async function testFirestoreConnection() {
 }
 
 export const ADMIN_EMAIL = 'kof5842@gmail.com';
+export const ADMIN_EMAILS = ['kof5842@gmail.com', 'aosbjjkorea@gmail.com'];
+
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false;
+  return ADMIN_EMAILS.includes(email.trim().toLowerCase());
+}
 
 // Google Sign-In with Popup
 export async function signInWithGoogle(): Promise<User> {
@@ -114,7 +120,7 @@ export async function signInWithGoogle(): Promise<User> {
     // Create/update user profile doc
     const user = result.user;
     const userRef = doc(db, 'users', user.uid);
-    const isAdmin = user.email === ADMIN_EMAIL;
+    const isAdmin = isAdminEmail(user.email);
     await setDoc(
       userRef,
       {
@@ -129,7 +135,7 @@ export async function signInWithGoogle(): Promise<User> {
     );
     return user;
   } catch (error) {
-    console.error('Google Sign-In Error:', error);
+    console.warn('Google Sign-In warning:', error);
     throw error;
   }
 }

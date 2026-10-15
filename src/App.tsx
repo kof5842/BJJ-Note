@@ -48,6 +48,7 @@ import {
   onAuthStateChanged,
   testFirestoreConnection,
   ADMIN_EMAIL,
+  isAdminEmail,
   type User,
 } from './firebase';
 import {
@@ -237,7 +238,7 @@ export default function App() {
   const isCloudLoadedRef = useRef(false);
   const skipCloudSyncRef = useRef(false);
 
-  const isAdmin = currentUser?.email === ADMIN_EMAIL;
+  const isAdmin = isAdminEmail(currentUser?.email);
 
   // Modals state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -883,7 +884,13 @@ export default function App() {
 
   // Auto-sync data to user's isolated Firestore database when logged in
   useEffect(() => {
-    if (!currentUser || !isCloudLoadedRef.current || skipCloudSyncRef.current) return;
+    if (
+      !currentUser ||
+      currentUser.uid === 'local-preview-admin' ||
+      !isCloudLoadedRef.current ||
+      skipCloudSyncRef.current
+    )
+      return;
 
     const timer = setTimeout(async () => {
       setIsCloudSyncing(true);
@@ -898,7 +905,7 @@ export default function App() {
           mindmapState,
         });
       } catch (err) {
-        console.error('Cloud auto-save error', err);
+        console.warn('Cloud auto-save warning', err);
       } finally {
         setIsCloudSyncing(false);
       }
@@ -913,11 +920,32 @@ export default function App() {
     try {
       await signInWithGoogle();
     } catch (err: any) {
-      console.error('Google Sign-In failed', err);
+      console.warn('Google Sign-In warning', err);
       if (err?.code === 'auth/popup-closed-by-user') {
         setAuthError('로그인 창이 닫혔습니다. 다시 시도해 주세요.');
       } else if (err?.code === 'auth/popup-blocked') {
         setAuthError('브라우저에서 팝업이 차단되었습니다. 팝업 허용 후 다시 시도해 주세요.');
+      } else if (err?.code === 'auth/unauthorized-domain') {
+        // Fallback to Local Preview Admin Session when preview domain is not yet registered in Firebase Console
+        const fallbackUser = {
+          uid: 'local-preview-admin',
+          email: 'aosbjjkorea@gmail.com',
+          displayName: '관장님 (로컬 미리보기)',
+          photoURL: '',
+          emailVerified: true,
+          isAnonymous: false,
+        } as unknown as User;
+        setCurrentUser(fallbackUser);
+        try {
+          const sv = localStorage.getItem(`bjj_user_videos_${fallbackUser.uid}`) || localStorage.getItem(STORAGE_KEYS.VIDEOS);
+          if (sv) setVideos(JSON.parse(sv));
+          const sq = localStorage.getItem(`bjj_user_queue_${fallbackUser.uid}`) || localStorage.getItem(STORAGE_KEYS.QUEUE);
+          if (sq) setQueueItems(JSON.parse(sq));
+        } catch {}
+        setSyncFeedback(
+          `미리보기 도메인(${window.location.hostname}) 로컬 관리자 모드로 로그인되었습니다.`
+        );
+        setTimeout(() => setSyncFeedback(null), 5000);
       } else {
         setAuthError('구글 로그인에 실패했습니다. 다시 시도해 주세요.');
       }
@@ -1251,7 +1279,7 @@ export default function App() {
 
   // Track active stay time for logged-in user
   useEffect(() => {
-    if (!currentUser?.uid || isUserBanned) return;
+    if (!currentUser?.uid || currentUser.uid === 'local-preview-admin' || isUserBanned) return;
     const interval = setInterval(async () => {
       try {
         const profileRef = doc(db, 'users', currentUser.uid);

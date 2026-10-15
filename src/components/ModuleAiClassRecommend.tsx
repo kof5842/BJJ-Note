@@ -41,11 +41,14 @@ import {
 import {
   STORAGE_KEY_AI_RECOMMEND_SETTINGS,
   DEFAULT_AI_RECOMMEND_SETTINGS,
-  CURATED_BJJ_RECOMMENDATION_POOL,
-  getRecommendedCandidatesForDay,
   calculateStartPositionForDate,
   getDayOfWeekFromDateStr,
   getExcludedClassEntriesCount,
+  getNormalizedVideoKey,
+  seenUrlsHistory,
+  buildAllVideosPool,
+  getLoggedUrlsSet,
+  pickUniqueVideos,
 } from '../data/aiRecommendedTechniquesData';
 import {
   fetchClassJournal,
@@ -128,14 +131,10 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
   const [positionOverrides, setPositionOverrides] = useState<Record<string, string>>({});
   // Category override map per date: { [dateStr]: categoryName }
   const [categoryOverrides, setCategoryOverrides] = useState<Record<string, string>>({});
-  // Seed offset per date (for refreshing all 3 videos): { [dateStr]: number }
-  const [seedOffsets, setSeedOffsets] = useState<Record<string, number>>({});
-  // Single card swap replacements: { [`${dateStr}-${cardIndex}`]: candidate }
-  const [cardSwaps, setCardSwaps] = useState<Record<string, AiRecommendedVideoCandidate>>({});
+  // Custom assigned cards per date (set when refreshing all or swapping a single card): { [dateStr]: AiRecommendedVideoCandidate[] }
+  const [customDayCards, setCustomDayCards] = useState<Record<string, AiRecommendedVideoCandidate[]>>({});
   // Start time edits per card: { [`${dateStr}-${cardIndex}`]: 'MM:SS' }
   const [startTimeEdits, setStartTimeEdits] = useState<Record<string, string>>({});
-  // Track seen video youtubeIds per date for session-based zero-duplicate refreshing: { [dateStr]: string[] }
-  const [sessionSeenMap, setSessionSeenMap] = useState<Record<string, string[]>>({});
 
   // Preview Video Modal
   const [previewingVideo, setPreviewingVideo] = useState<{
@@ -153,16 +152,8 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
 
   // Save settings handler
   const handleSaveSettings = () => {
-    // If language or position cycle or goal count changed, reset single-card swaps, session seen map, and seed offsets
-    if (
-      draftSettings.language !== recommendSettings.language ||
-      draftSettings.positionCycle !== recommendSettings.positionCycle ||
-      draftSettings.dailyGoalCount !== recommendSettings.dailyGoalCount
-    ) {
-      setCardSwaps({});
-      setSeedOffsets({});
-      setSessionSeenMap({});
-    }
+    seenUrlsHistory.clear();
+    setCustomDayCards({});
     setRecommendSettings(draftSettings);
     try {
       localStorage.setItem(STORAGE_KEY_AI_RECOMMEND_SETTINGS, JSON.stringify(draftSettings));
@@ -191,68 +182,232 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
+  // Week view: generate Mon~Sun (7 days) for the selected week
+  const weekDays = useMemo(() => {
+    const target = new Date(selectedDateStr);
+    const day = target.getDay(); // 0 is Sun, 1 is Mon
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    const monday = new Date(target);
+    monday.setDate(target.getDate() + diffToMonday);
+
+    const days: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const str = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      days.push(str);
+    }
+    return days;
+  }, [selectedDateStr]);
+
+  // Combined deduplicated video pool
+  const allVideosPool = useMemo(() => buildAllVideosPool(videos), [videos]);
+
+  // Compute weekly schedule in a single coordinated pass so NO two days in the week share a URL
+  const weekScheduleMap = useMemo(() => {
+    const map: Record<
+      string,
+      {
+        startPosition: string;
+        dayStyle: AiRecommendDayStyle;
+        isOffDay: boolean;
+        candidates: AiRecommendedVideoCandidate[];
+        totalPoolSize: number;
+        unseenPoolSize: number;
+      }
+    > = {};
+
+    const currentlyAssignedUrls = new Set<string>();
+    const goalCount = Math.min(Math.max(recommendSettings.dailyGoalCount || 3, 1), 3);
+
+    // 1. Pre-register any custom refreshed/swapped cards in this week so other days never duplicate them
+    weekDays.forEach((dStr) => {
+      const custom = customDayCards[dStr];
+      if (custom && custom.length > 0) {
+        custom.slice(0, goalCount).forEach((c) => {
+          const k = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
+          if (k) currentlyAssignedUrls.add(k);
+        });
+      }
+    });
+
+    // 2. Assign unique videos for each day of the week using pickUniqueVideos
+    weekDays.forEach((dStr) => {
+      const dayOfWeek = getDayOfWeekFromDateStr(dStr);
+      const dayStyle: AiRecommendDayStyle =
+        (recommendSettings.dayStyles as Record<number, AiRecommendDayStyle>)[dayOfWeek] || 'all';
+
+      if (dayStyle === 'off') {
+        map[dStr] = {
+          startPosition: '휴관 (수업 없음)',
+          dayStyle: 'off',
+          isOffDay: true,
+          candidates: [],
+          totalPoolSize: 0,
+          unseenPoolSize: 0,
+        };
+        return;
+      }
+
+      const startPosition = calculateStartPositionForDate(
+        dStr,
+        recommendSettings.positionCycle,
+        positionOverrides[dStr],
+        recommendSettings.searchScope || 'all_expanded',
+        dayStyle
+      );
+
+      if (customDayCards[dStr] && customDayCards[dStr].length > 0) {
+        const customList = customDayCards[dStr].slice(0, goalCount).map((c) => ({
+          ...c,
+          startPosition,
+        }));
+        map[dStr] = {
+          startPosition,
+          dayStyle,
+          isOffDay: false,
+          candidates: customList,
+          totalPoolSize: allVideosPool.length,
+          unseenPoolSize: customList.length,
+        };
+        return;
+      }
+
+      const loggedUrls = getLoggedUrlsSet(
+        classEntries,
+        recommendSettings.dedupPeriod,
+        recommendSettings.customDedupDays,
+        dStr
+      );
+      const overrideCat = categoryOverrides[dStr];
+      const targetType =
+        !overrideCat || overrideCat === '전체' || overrideCat === '미분류' ? 'ALL' : overrideCat;
+
+      const selected = pickUniqueVideos({
+        allVideosPool,
+        settings: recommendSettings,
+        dateStr: dStr,
+        dayOfWeek,
+        targetPosition: startPosition,
+        targetType,
+        loggedUrls,
+        currentlyAssignedUrls,
+        countToPick: goalCount,
+        recordToSeenHistory: false,
+      });
+
+      map[dStr] = {
+        startPosition,
+        dayStyle,
+        isOffDay: false,
+        candidates: selected,
+        totalPoolSize: allVideosPool.length,
+        unseenPoolSize: selected.length,
+      };
+    });
+
+    return map;
+  }, [
+    weekDays,
+    customDayCards,
+    recommendSettings,
+    positionOverrides,
+    categoryOverrides,
+    classEntries,
+    allVideosPool,
+  ]);
+
   // Get candidate list for any given date
   const getCandidatesForDate = useCallback(
     (dateStr: string) => {
-      const overridePos = positionOverrides[dateStr];
-      const overrideCat = categoryOverrides[dateStr];
-      const seed = seedOffsets[dateStr] || 0;
-      const seenList = sessionSeenMap[dateStr] || [];
-      const excludeSet = new Set(seenList);
-
-      const res = getRecommendedCandidatesForDay(
-        dateStr,
-        recommendSettings,
-        classEntries,
-        overridePos,
-        overrideCat,
-        seed,
-        videos,
-        excludeSet
-      );
-
-      if (res.isOffDay) {
+      if (weekScheduleMap[dateStr]) {
+        return weekScheduleMap[dateStr];
+      }
+      const dayOfWeek = getDayOfWeekFromDateStr(dateStr);
+      const dayStyle: AiRecommendDayStyle =
+        (recommendSettings.dayStyles as Record<number, AiRecommendDayStyle>)[dayOfWeek] || 'all';
+      if (dayStyle === 'off') {
         return {
-          startPosition: res.startPosition,
-          dayStyle: res.dayStyle,
+          startPosition: '휴관 (수업 없음)',
+          dayStyle: 'off' as AiRecommendDayStyle,
           isOffDay: true,
           candidates: [],
           totalPoolSize: 0,
           unseenPoolSize: 0,
         };
       }
-
-      // Check if any card has an individual swap override
-      const finalCandidates = res.candidates.map((cand, idx) => {
-        const swapKey = `${dateStr}-${idx}`;
-        if (cardSwaps[swapKey]) {
-          return { ...cardSwaps[swapKey], startPosition: res.startPosition };
-        }
-        return cand;
+      const startPosition = calculateStartPositionForDate(
+        dateStr,
+        recommendSettings.positionCycle,
+        positionOverrides[dateStr],
+        recommendSettings.searchScope || 'all_expanded',
+        dayStyle
+      );
+      const goalCount = Math.min(Math.max(recommendSettings.dailyGoalCount || 3, 1), 3);
+      if (customDayCards[dateStr] && customDayCards[dateStr].length > 0) {
+        return {
+          startPosition,
+          dayStyle,
+          isOffDay: false,
+          candidates: customDayCards[dateStr].slice(0, goalCount).map((c) => ({ ...c, startPosition })),
+          totalPoolSize: allVideosPool.length,
+          unseenPoolSize: customDayCards[dateStr].length,
+        };
+      }
+      const loggedUrls = getLoggedUrlsSet(
+        classEntries,
+        recommendSettings.dedupPeriod,
+        recommendSettings.customDedupDays,
+        dateStr
+      );
+      const currentlyAssignedUrls = new Set<string>();
+      const overrideCat = categoryOverrides[dateStr];
+      const targetType =
+        !overrideCat || overrideCat === '전체' || overrideCat === '미분류' ? 'ALL' : overrideCat;
+      const selected = pickUniqueVideos({
+        allVideosPool,
+        settings: recommendSettings,
+        dateStr,
+        dayOfWeek,
+        targetPosition: startPosition,
+        targetType,
+        loggedUrls,
+        currentlyAssignedUrls,
+        countToPick: goalCount,
+        recordToSeenHistory: false,
       });
-
       return {
-        startPosition: res.startPosition,
-        dayStyle: res.dayStyle,
+        startPosition,
+        dayStyle,
         isOffDay: false,
-        candidates: finalCandidates,
-        totalPoolSize: res.totalPoolSize,
-        unseenPoolSize: res.unseenPoolSize,
-        wasReset: res.wasReset,
+        candidates: selected,
+        totalPoolSize: allVideosPool.length,
+        unseenPoolSize: selected.length,
       };
     },
-    [positionOverrides, categoryOverrides, seedOffsets, cardSwaps, sessionSeenMap, recommendSettings, classEntries, videos]
+    [
+      weekScheduleMap,
+      recommendSettings,
+      positionOverrides,
+      categoryOverrides,
+      customDayCards,
+      allVideosPool,
+      classEntries,
+    ]
   );
 
   // Check if a technique or video is already registered in class journal for this date
   const isCandidateRegisteredOnDate = useCallback(
     (dateStr: string, candidate: AiRecommendedVideoCandidate) => {
-      return classEntries.some(
-        (entry) =>
-          entry.date === dateStr &&
-          (entry.youtubeId === candidate.youtubeId ||
-            entry.videoTitleKo.trim().toLowerCase() === candidate.techniqueName.trim().toLowerCase())
-      );
+      const candKey = getNormalizedVideoKey(candidate.youtubeUrl || candidate.youtubeId || '');
+      return classEntries.some((entry) => {
+        if (entry.date !== dateStr) return false;
+        const entryKey = getNormalizedVideoKey(entry.youtubeUrl || entry.youtubeId || '');
+        return (
+          (candKey && entryKey === candKey) ||
+          entry.videoTitleKo.trim().toLowerCase() === candidate.techniqueName.trim().toLowerCase()
+        );
+      });
     },
     [classEntries]
   );
@@ -275,15 +430,7 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     const specifiedTimeLabel = startTimeEdits[timeKey] || candidate.recommendedStartTime || '00:00';
     const specifiedSec = parseMMSS(specifiedTimeLabel);
 
-    // Check if already registered
-    const existingIndex = classEntries.findIndex(
-      (entry) =>
-        entry.date === dateStr &&
-        (entry.youtubeId === candidate.youtubeId ||
-          entry.videoTitleKo.trim().toLowerCase() === candidate.techniqueName.trim().toLowerCase())
-    );
-
-    if (existingIndex >= 0) {
+    if (isCandidateRegisteredOnDate(dateStr, candidate)) {
       showToast(`이미 [${dateStr}] 수업일지에 등록되어 있는 기술입니다.`);
       return;
     }
@@ -324,7 +471,7 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
           techniqueTag: candidate.techniqueName,
         },
       ],
-      isPublished: true, // Default to published for gym students
+      isPublished: true,
       instructorName: settings.appTitle || '관장님',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -337,60 +484,76 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     showToast(`✅ [${dateStr}] '${candidate.techniqueName}' (${specifiedTimeLabel}) 수업일지 등록 완료!`);
   };
 
-  // Refresh all candidate videos for a date with ZERO duplicates until pool exhaustion
+  // Refresh all candidate videos for a date using pickUniqueVideos (100% URL duplicate check)
   const handleRefreshDayCandidates = (dateStr: string) => {
-    // 1. Get current candidates
     const currentData = getCandidatesForDate(dateStr);
     if (currentData.isOffDay || currentData.candidates.length === 0) return;
 
-    // Record both youtubeId and youtubeUrl for explicit URL matching ("URL이 같은가? YES -> 제외")
-    const currentYtKeys = currentData.candidates.flatMap((c) =>
-      [c.youtubeId, c.youtubeUrl].filter(Boolean) as string[]
-    );
-    const prevSeen = sessionSeenMap[dateStr] || [];
-    const updatedSeen = Array.from(new Set([...prevSeen, ...currentYtKeys]));
+    const currentlyAssignedUrls = new Set<string>();
+    // Register all currently visible cards across the week AND add current date's cards to seenUrlsHistory
+    weekDays.forEach((dStr) => {
+      const dData = getCandidatesForDate(dStr);
+      dData.candidates.forEach((c) => {
+        const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
+        if (key) {
+          currentlyAssignedUrls.add(key);
+          if (dStr === dateStr) {
+            seenUrlsHistory.add(key);
+          }
+        }
+      });
+    });
 
-    // Query test result with updated seen list
-    const testRes = getRecommendedCandidatesForDay(
-      dateStr,
-      recommendSettings,
+    currentData.candidates.forEach((c) => {
+      const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
+      if (key) {
+        currentlyAssignedUrls.add(key);
+        seenUrlsHistory.add(key);
+      }
+    });
+
+    const dayOfWeek = getDayOfWeekFromDateStr(dateStr);
+    const goalCount = Math.min(Math.max(recommendSettings.dailyGoalCount || 3, 1), 3);
+    const loggedUrls = getLoggedUrlsSet(
       classEntries,
-      positionOverrides[dateStr],
-      categoryOverrides[dateStr],
-      (seedOffsets[dateStr] || 0) + 3,
-      videos,
-      new Set(updatedSeen)
+      recommendSettings.dedupPeriod,
+      recommendSettings.customDedupDays,
+      dateStr
     );
+    const overrideCat = categoryOverrides[dateStr];
+    const targetType =
+      !overrideCat || overrideCat === '전체' || overrideCat === '미분류' ? 'ALL' : overrideCat;
 
-    if (testRes.wasReset) {
-      // Pool was exhausted, reset session seen map and start fresh cycle
-      setSessionSeenMap((prev) => ({
+    const prevSeenSize = seenUrlsHistory.size;
+    const nextCandidates = pickUniqueVideos({
+      allVideosPool,
+      settings: recommendSettings,
+      dateStr,
+      dayOfWeek,
+      targetPosition: currentData.startPosition,
+      targetType,
+      loggedUrls,
+      currentlyAssignedUrls,
+      countToPick: goalCount,
+      recordToSeenHistory: true,
+    });
+    const wasReset = prevSeenSize > 0 && seenUrlsHistory.size < prevSeenSize;
+
+    if (nextCandidates.length > 0) {
+      setCustomDayCards((prev) => ({
         ...prev,
-        [dateStr]: testRes.candidates.flatMap((c) => [c.youtubeId, c.youtubeUrl].filter(Boolean) as string[]),
+        [dateStr]: nextCandidates,
       }));
-      setSeedOffsets((prev) => ({ ...prev, [dateStr]: (prev[dateStr] || 0) + 3 }));
-      showToast(`🔄 이 포지션의 모든 URL/영상(${testRes.totalPoolSize}개)을 탐색하여 다시 처음부터 순환합니다.`);
-    } else {
-      // Found new unseen candidates!
-      setSessionSeenMap((prev) => ({
-        ...prev,
-        [dateStr]: updatedSeen,
-      }));
-      setSeedOffsets((prev) => ({ ...prev, [dateStr]: (prev[dateStr] || 0) + 3 }));
-      showToast(`✨ 새로운 URL 영상 ${testRes.candidates.length}개를 불러왔습니다. (URL 중복 100% 검사 완료)`);
     }
 
-    // Clear individual swaps for this day
-    setCardSwaps((prev) => {
-      const next = { ...prev };
-      delete next[`${dateStr}-0`];
-      delete next[`${dateStr}-1`];
-      delete next[`${dateStr}-2`];
-      return next;
-    });
+    if (wasReset) {
+      showToast(`🔄 모든 후보 영상을 탐색하여 이전 스킵 기록을 초기화하고 새로운 조합으로 순환합니다.`);
+    } else {
+      showToast(`✨ 중복 없는 새로운 URL 영상 ${nextCandidates.length}개를 불러왔습니다.`);
+    }
   };
 
-  // Swap a single card with an unseen candidate from the same position
+  // Swap a single card using pickUniqueVideos (countToPick: 1, strict URL & style & language check)
   const handleSwapSingleCard = (
     dateStr: string,
     cardIndex: number,
@@ -398,58 +561,64 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     startPosition: string
   ) => {
     const currentData = getCandidatesForDate(dateStr);
-    const displayedYtKeys = new Set(
-      currentData.candidates.flatMap((c) => [c.youtubeId, c.youtubeUrl].filter(Boolean) as string[])
-    );
-    const seenYtKeys = new Set(sessionSeenMap[dateStr] || []);
+    if (currentData.isOffDay) return;
 
-    const lang = recommendSettings.language;
-    const pool = CURATED_BJJ_RECOMMENDATION_POOL.filter((c) => {
-      if (lang === 'ko') return c.language === 'ko';
-      if (lang === 'en') return c.language === 'en';
-      return true;
+    const currentlyAssignedUrls = new Set<string>();
+    // Register all currently displayed cards across the week (and on this date) so the replacement never collides
+    weekDays.forEach((dStr) => {
+      const dData = getCandidatesForDate(dStr);
+      dData.candidates.forEach((c) => {
+        const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
+        if (key) currentlyAssignedUrls.add(key);
+      });
+    });
+    currentData.candidates.forEach((c) => {
+      const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
+      if (key) currentlyAssignedUrls.add(key);
     });
 
-    const matchingSamePosition = pool.filter(
-      (c) =>
-        c.startPosition.toLowerCase() === startPosition.toLowerCase() ||
-        c.startPosition.includes(startPosition) ||
-        startPosition.includes(c.startPosition)
+    const currentCardKey = getNormalizedVideoKey(
+      currentCandidate.youtubeUrl || currentCandidate.youtubeId || ''
     );
-
-    const basePool = matchingSamePosition.length > 0 ? matchingSamePosition : pool;
-
-    // Try candidates NOT currently displayed AND NOT in seen history
-    let unseenCandidates = basePool.filter(
-      (c) => !displayedYtKeys.has(c.youtubeId) && !seenYtKeys.has(c.youtubeId) && (!c.youtubeUrl || !seenYtKeys.has(c.youtubeUrl))
-    );
-
-    // If all were seen, try candidates NOT currently displayed
-    if (unseenCandidates.length === 0) {
-      unseenCandidates = basePool.filter((c) => !displayedYtKeys.has(c.youtubeId));
+    if (currentCardKey) {
+      currentlyAssignedUrls.add(currentCardKey);
+      seenUrlsHistory.add(currentCardKey);
     }
 
-    const poolToUse = unseenCandidates.length > 0 ? unseenCandidates : basePool;
-    const randomPick = poolToUse[Math.floor(Math.random() * poolToUse.length)];
+    const dayOfWeek = getDayOfWeekFromDateStr(dateStr);
+    const loggedUrls = getLoggedUrlsSet(
+      classEntries,
+      recommendSettings.dedupPeriod,
+      recommendSettings.customDedupDays,
+      dateStr
+    );
+    const overrideCat = categoryOverrides[dateStr];
+    const targetType =
+      !overrideCat || overrideCat === '전체' || overrideCat === '미분류' ? 'ALL' : overrideCat;
 
-    const swappedCandidate: AiRecommendedVideoCandidate = {
-      ...randomPick,
-      startPosition, // maintain strictly the same starting position!
-    };
+    const picked = pickUniqueVideos({
+      allVideosPool,
+      settings: recommendSettings,
+      dateStr,
+      dayOfWeek,
+      targetPosition: startPosition,
+      targetType,
+      loggedUrls,
+      currentlyAssignedUrls,
+      countToPick: 1,
+      recordToSeenHistory: true,
+    });
 
-    const swapKey = `${dateStr}-${cardIndex}`;
-    setCardSwaps((prev) => ({
-      ...prev,
-      [swapKey]: swappedCandidate,
-    }));
-
-    // Record swapped video in sessionSeenMap (both ID and URL)
-    setSessionSeenMap((prev) => ({
-      ...prev,
-      [dateStr]: Array.from(new Set([...(prev[dateStr] || []), randomPick.youtubeId, randomPick.youtubeUrl].filter(Boolean) as string[])),
-    }));
-
-    showToast(`🔍 '${startPosition}'의 중복 없는 새로운 영상으로 교체되었습니다.`);
+    if (picked.length > 0) {
+      const updatedList = currentData.candidates.map((cand, idx) =>
+        idx === cardIndex ? { ...picked[0], startPosition } : cand
+      );
+      setCustomDayCards((prev) => ({
+        ...prev,
+        [dateStr]: updatedList,
+      }));
+      showToast(`🔍 '${startPosition}'의 중복 없는 새로운 영상으로 교체되었습니다.`);
+    }
   };
 
   // Change category/position override via dropdown
@@ -458,18 +627,9 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
       ...prev,
       [dateStr]: newPosition,
     }));
-    // Reset seed, session seen history, and swaps for clean recommendations
-    setSeedOffsets((prev) => ({ ...prev, [dateStr]: 0 }));
-    setSessionSeenMap((prev) => {
+    setCustomDayCards((prev) => {
       const next = { ...prev };
       delete next[dateStr];
-      return next;
-    });
-    setCardSwaps((prev) => {
-      const next = { ...prev };
-      delete next[`${dateStr}-0`];
-      delete next[`${dateStr}-1`];
-      delete next[`${dateStr}-2`];
       return next;
     });
     showToast(`📂 시작 포지션을 '${newPosition}'(으)로 변경했습니다.`);
@@ -516,25 +676,6 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
       draftSettings.customDedupDays
     );
   }, [classEntries, draftSettings.dedupPeriod, draftSettings.customDedupDays]);
-
-  // Week view: generate Mon~Sun (7 days) for the selected week (Requirement 2)
-  const weekDays = useMemo(() => {
-    const target = new Date(selectedDateStr);
-    const day = target.getDay(); // 0 is Sun, 1 is Mon
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    const monday = new Date(target);
-    monday.setDate(target.getDate() + diffToMonday);
-
-    const days: string[] = [];
-    // Mon to Sun (7 full days)
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      const str = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      days.push(str);
-    }
-    return days;
-  }, [selectedDateStr]);
 
   // Month view: days in viewYear & viewMonth
   const monthDays = useMemo(() => {
@@ -811,9 +952,14 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
               availablePositions={availablePositions}
               techniqueCategories={techniqueCategories}
               selectedCategory={categoryOverrides[selectedDateStr] || '전체'}
-              onSelectCategory={(cat) =>
-                setCategoryOverrides((prev) => ({ ...prev, [selectedDateStr]: cat }))
-              }
+              onSelectCategory={(cat) => {
+                setCategoryOverrides((prev) => ({ ...prev, [selectedDateStr]: cat }));
+                setCustomDayCards((prev) => {
+                  const next = { ...prev };
+                  delete next[selectedDateStr];
+                  return next;
+                });
+              }}
               onSelectPosition={(pos) => handleSelectPositionOverride(selectedDateStr, pos)}
               onRefreshAll={() => handleRefreshDayCandidates(selectedDateStr)}
               onSwapSingleCard={(idx, candidate) =>
@@ -873,9 +1019,14 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
                     availablePositions={availablePositions}
                     techniqueCategories={techniqueCategories}
                     selectedCategory={categoryOverrides[dateStr] || '전체'}
-                    onSelectCategory={(cat) =>
-                      setCategoryOverrides((prev) => ({ ...prev, [dateStr]: cat }))
-                    }
+                    onSelectCategory={(cat) => {
+                      setCategoryOverrides((prev) => ({ ...prev, [dateStr]: cat }));
+                      setCustomDayCards((prev) => {
+                        const next = { ...prev };
+                        delete next[dateStr];
+                        return next;
+                      });
+                    }}
                     onSelectPosition={(pos) => handleSelectPositionOverride(dateStr, pos)}
                     onRefreshAll={() => handleRefreshDayCandidates(dateStr)}
                     onSwapSingleCard={(idx, candidate) =>

@@ -101,7 +101,7 @@ export const CURATED_BJJ_RECOMMENDATION_POOL: AiRecommendedVideoCandidate[] = [
     recommendedStartTime: '01:25',
     recommendedStartSec: 85,
     keyDetailTag: '가슴 펴며 골반 폭발 & 상대 팔꿈치 트랩',
-    language: 'ko',
+    language: 'en',
   },
   {
     id: 'cg-5',
@@ -307,7 +307,7 @@ export const CURATED_BJJ_RECOMMENDATION_POOL: AiRecommendedVideoCandidate[] = [
     recommendedStartTime: '02:10',
     recommendedStartSec: 130,
     keyDetailTag: '손목 바닥 누르기 & 팔꿈치 갈비뼈로 끌어당기기',
-    language: 'ko',
+    language: 'en',
   },
   {
     id: 'sc-2',
@@ -1786,19 +1786,19 @@ export const CURATED_BJJ_RECOMMENDATION_POOL: AiRecommendedVideoCandidate[] = [
   // ==========================================
   {
     id: 'kob-en-1',
-    techniqueName: '니온밸리 방어: 탈출 후 상위 포지션 점유 (Knee on Belly Defense)',
-    techniqueNameEn: 'Knee on Belly Defense: Escape and End Up on Top | BJJ Reversal',
+    techniqueName: '니온밸리 탈출 후 리버설 3가지 실전 카운터 (Chewjitsu)',
+    techniqueNameEn: '3 Knee on Belly Escapes in BJJ by Chewjitsu',
     startPosition: '니온밸리',
     category: '이스케이프',
     giType: 'Both',
-    youtubeUrl: 'https://www.youtube.com/watch?v=HtxGQuBzerU',
-    youtubeId: 'HtxGQuBzerU',
-    channelName: 'Gracie Barra Aliso Viejo',
-    thumbnailUrl: 'https://i.ytimg.com/vi/HtxGQuBzerU/hqdefault.jpg',
-    duration: '05:25',
-    recommendedStartTime: '00:45',
-    recommendedStartSec: 45,
-    keyDetailTag: '전완 프레임 쐐기 & 정강이 밀어내며 싱글렉 전환',
+    youtubeUrl: 'https://www.youtube.com/watch?v=vA8W92uD6kI',
+    youtubeId: 'vA8W92uD6kI',
+    channelName: 'Chewjitsu',
+    thumbnailUrl: 'https://i.ytimg.com/vi/vA8W92uD6kI/hqdefault.jpg',
+    duration: '07:40',
+    recommendedStartTime: '01:15',
+    recommendedStartSec: 75,
+    keyDetailTag: '벨트 프레임 밀어내기 & 언더훅 싱글렉 전환',
     language: 'en',
   },
   {
@@ -1856,6 +1856,63 @@ export const EXTENDED_THEME_CYCLE_ORDER = [
 
 export const POSITION_CYCLE_ORDER = EXTENDED_THEME_CYCLE_ORDER;
 
+// ==========================================
+// 1. 유튜브/외부 영상 URL 정규화 함수 (같은 영상인데 주소 형태만 다른 경우 완벽 차단)
+// ==========================================
+export function getNormalizedVideoKey(url: string): string {
+  if (!url) return '';
+  const trimmed = url.trim();
+  const ytMatch = trimmed.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `yt_${ytMatch[1]}`; // 유튜브 고유 ID 추출
+  }
+  // 순수 11자리 유튜브 ID가 들어온 경우에도 동일하게 yt_ 접두사로 정규화
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+    return `yt_${trimmed}`;
+  }
+  return trimmed.split('?')[0].toLowerCase(); // 일반 URL은 쿼리스트링 제거 후 비교
+}
+
+// ==========================================
+// 2. 이미 노출되었거나 교체된 URL을 저장하는 상태 (날짜별/전역 관리)
+// seenUrlsHistory: 사용자가 '다른 영상' 또는 '영상 교체'를 눌러 넘긴 URL 기록
+// ==========================================
+export const seenUrlsHistory = new Set<string>();
+
+// 영어(해외) 채널 명시적 목록 (제목 번역 여부와 무관하게 채널 언어 기준으로 엄격 판별)
+const ENGLISH_CHANNEL_NAMES = new Set([
+  'chewjitsu',
+  'bjj fanatics',
+  'bernardo faria bjj fanatics',
+  'stephan kesting',
+  'jordan teaches jiujitsu',
+  'brian glick',
+  'shintaro higashi',
+  'travis stevens',
+  'knight jiu-jitsu',
+  'absolute mma',
+  'ma1 combat',
+  'gracie barra aliso viejo',
+  'aaron benzrihem bjj',
+  'chess club jiu-jitsu',
+  'will brooks official',
+  'urban jiu-jitsu',
+  'brewjitsu',
+]);
+
+export function getEffectiveVideoLang(video: AiRecommendedVideoCandidate & { lang?: string }): 'ko' | 'en' {
+  const ch = (video.channelName || '').trim().toLowerCase();
+  if (ENGLISH_CHANNEL_NAMES.has(ch)) {
+    return 'en';
+  }
+  const explicitLang = video.lang || video.language;
+  if (explicitLang === 'en') return 'en';
+  if (explicitLang === 'ko') return 'ko';
+  return 'ko';
+}
+
 export function getDayOfWeekFromDateStr(dateStr: string): number {
   const parts = dateStr.split('-').map(Number);
   if (parts.length === 3) {
@@ -1872,6 +1929,42 @@ export function getDaysDiff(dateStr1: string, dateStr2: string): number {
 }
 
 /**
+ * 수업일지에 등록된 중복 방지 기간 내 URL Key Set 반환
+ */
+export function getLoggedUrlsSet(
+  journalEntries: ClassJournalEntry[],
+  dedupPeriod: AiRecommendSettings['dedupPeriod'],
+  customDedupDays?: number,
+  referenceDateStr?: string
+): Set<string> {
+  const loggedUrls = new Set<string>();
+  if (!journalEntries || journalEntries.length === 0) return loggedUrls;
+
+  let dedupDays = 90;
+  if (dedupPeriod === 'custom') {
+    dedupDays = customDedupDays || 90;
+  } else {
+    dedupDays = parseInt(dedupPeriod || '90', 10) || 90;
+  }
+
+  const refTime = referenceDateStr ? new Date(referenceDateStr).getTime() : Date.now();
+  const validRefTime = isNaN(refTime) ? Date.now() : refTime;
+  const cutoff = validRefTime - dedupDays * 24 * 60 * 60 * 1000;
+
+  journalEntries.forEach((entry) => {
+    const entryTime = new Date(entry.date).getTime();
+    if (!isNaN(entryTime) && entryTime >= cutoff && entryTime <= validRefTime + 24 * 60 * 60 * 1000) {
+      const key = getNormalizedVideoKey(entry.youtubeUrl || entry.youtubeId || '');
+      if (key) {
+        loggedUrls.add(key);
+      }
+    }
+  });
+
+  return loggedUrls;
+}
+
+/**
  * Calculates how many class journal entries are currently excluded by the dedup period
  */
 export function getExcludedClassEntriesCount(
@@ -1879,34 +1972,12 @@ export function getExcludedClassEntriesCount(
   dedupPeriod: AiRecommendSettings['dedupPeriod'],
   customDedupDays?: number
 ): number {
-  if (!journalEntries || journalEntries.length === 0) return 0;
-  let dedupDays = 90;
-  if (dedupPeriod === 'custom') {
-    dedupDays = customDedupDays || 90;
-  } else {
-    dedupDays = parseInt(dedupPeriod || '90', 10) || 90;
-  }
-  const now = Date.now();
-  const cutoff = now - dedupDays * 24 * 60 * 60 * 1000;
-  const uniqueExcluded = new Set<string>();
-
-  journalEntries.forEach((entry) => {
-    const entryTime = new Date(entry.date).getTime();
-    if (!isNaN(entryTime) && entryTime >= cutoff && entryTime <= now) {
-      if (entry.youtubeId) {
-        uniqueExcluded.add(`yt:${entry.youtubeId}`);
-      } else if (entry.videoTitleKo) {
-        uniqueExcluded.add(`title:${entry.videoTitleKo.trim().toLowerCase()}`);
-      }
-    }
-  });
-
-  return uniqueExcluded.size;
+  return getLoggedUrlsSet(journalEntries, dedupPeriod, customDedupDays).size;
 }
 
 /**
  * Deterministic starting position / theme calculation
- * Uses strict Monday-to-Sunday week alignment for weekly cycles (Requirement 5)
+ * Uses strict Monday-to-Sunday week alignment for weekly cycles
  */
 export function calculateStartPositionForDate(
   dateStr: string,
@@ -1927,17 +1998,20 @@ export function calculateStartPositionForDate(
     return '레슬링 & 스탠딩 테이크다운';
   }
 
-  const cycleList = searchScope === 'master_tree_only' ? MASTER_TREE_POSITION_CYCLE : EXTENDED_THEME_CYCLE_ORDER;
+  const cycleList =
+    searchScope === 'master_tree_only' ? MASTER_TREE_POSITION_CYCLE : EXTENDED_THEME_CYCLE_ORDER;
 
   const parts = dateStr.split('-').map(Number);
   const dateObj = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
 
   if (cycle === 'weekly') {
-    // Strict Monday-to-Sunday week grouping (Requirement 5)
-    // In JS: getDay() returns 0 for Sunday, 1 for Monday... 6 for Saturday
     const jsDay = dateObj.getDay();
     const diffToMonday = (jsDay + 6) % 7; // Mon: 0, Tue: 1, ..., Sun: 6
-    const mondayDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate() - diffToMonday);
+    const mondayDate = new Date(
+      dateObj.getFullYear(),
+      dateObj.getMonth(),
+      dateObj.getDate() - diffToMonday
+    );
     mondayDate.setHours(0, 0, 0, 0);
 
     const mondayEpochDays = Math.floor(mondayDate.getTime() / (1000 * 60 * 60 * 24));
@@ -1946,12 +2020,10 @@ export function calculateStartPositionForDate(
   }
 
   if (cycle === 'chain') {
-    // Sequential rotation
     const dayNum = dateObj.getDate();
     return cycleList[dayNum % cycleList.length];
   }
 
-  // 'daily': Absolute epoch day rotation
   const epochDays = Math.floor(dateObj.getTime() / (1000 * 60 * 60 * 24));
   return cycleList[Math.abs(epochDays) % cycleList.length];
 }
@@ -1965,30 +2037,378 @@ export function isSameYoutubeUrlOrId(
   excludeSet?: Set<string>
 ): boolean {
   if (!cand || !excludeSet || excludeSet.size === 0) return false;
+  const candKey = getNormalizedVideoKey(cand.youtubeUrl || cand.youtubeId || '');
+  if (!candKey) return false;
+  if (excludeSet.has(candKey)) return true;
 
-  // 1. Direct ID check
-  if (cand.youtubeId && excludeSet.has(cand.youtubeId.trim())) return true;
-
-  // 2. Direct URL check
-  if (cand.youtubeUrl && excludeSet.has(cand.youtubeUrl.trim())) return true;
-
-  // 3. Substring / normalized URL check
-  for (const seenKey of excludeSet) {
-    if (!seenKey) continue;
-    const cleanKey = seenKey.trim();
-    if (cand.youtubeId && cleanKey.includes(cand.youtubeId)) return true;
-    if (cand.youtubeUrl && (cleanKey.includes(cand.youtubeUrl) || cand.youtubeUrl.includes(cleanKey))) return true;
+  for (const seenItem of excludeSet) {
+    if (!seenItem) continue;
+    if (getNormalizedVideoKey(seenItem) === candKey) return true;
   }
-
   return false;
 }
 
 /**
- * Main recommendation query function for a given day
- * 1. Checks user custom settings (dedup, dayStyle, language)
- * 2. Unifies all candidate cards to the SAME start position / theme
- * 3. Enforces strict language isolation (한국어 선택 시 영어 100% 차단)
- * 4. Adjusts candidate count to dailyGoalCount (1, 2, or 3)
+ * 포지션/테마 매칭 판별 헬퍼
+ */
+export function matchesPositionOrTheme(
+  video: AiRecommendedVideoCandidate,
+  targetPosition: string
+): boolean {
+  if (!targetPosition) return true;
+  const normPos = targetPosition.toLowerCase().trim();
+  const vPos = (video.startPosition || '').toLowerCase().trim();
+
+  if (vPos === normPos) return true;
+
+  if (normPos.includes('유도')) {
+    return (
+      video.giType === '유도' ||
+      video.category.includes('유도') ||
+      video.startPosition.includes('유도')
+    );
+  }
+  if (normPos.includes('레슬링') || normPos.includes('스탠딩') || normPos.includes('테이크다운')) {
+    return (
+      video.giType === '레슬링' ||
+      video.category === '테이크다운' ||
+      video.startPosition.includes('스탠딩') ||
+      video.startPosition.includes('레슬링')
+    );
+  }
+  if (normPos.includes('자유 테마')) {
+    return true;
+  }
+  if (normPos.includes('서브미션')) {
+    return video.category === '서브미션';
+  }
+  if (normPos.includes('이스케이프') || normPos.includes('생존') || normPos.includes('탈출')) {
+    return video.category === '이스케이프';
+  }
+  if (normPos.includes('가드 리텐션') || normPos.includes('리커버리')) {
+    return (
+      video.category.includes('가드') ||
+      video.category === '스윕' ||
+      video.startPosition.includes('가드')
+    );
+  }
+  if (
+    normPos.includes('가드 패스') ||
+    normPos.includes('압박 패스') ||
+    normPos.includes('스매시') ||
+    normPos.includes('패스')
+  ) {
+    return (
+      video.category === '가드 패스' ||
+      video.startPosition.includes('오픈 가드 탑') ||
+      video.startPosition.includes('가드 패스')
+    );
+  }
+  if (
+    normPos.includes('모던 가드') ||
+    normPos.includes('베림보로') ||
+    normPos.includes('데라히바')
+  ) {
+    return (
+      video.startPosition.includes('데라히바') ||
+      video.startPosition.includes('라쏘') ||
+      video.startPosition.includes('스파이더')
+    );
+  }
+  if (normPos === '마운트' || (normPos.includes('마운트') && !normPos.includes('백'))) {
+    return video.startPosition.includes('마운트') && !video.startPosition.includes('백');
+  }
+  if (
+    normPos.includes('백 마운트') ||
+    normPos.includes('백 컨트롤') ||
+    normPos.includes('백포지션')
+  ) {
+    return video.startPosition.includes('백');
+  }
+  if (normPos.includes('터틀') || normPos.includes('크루시픽스')) {
+    return video.startPosition.includes('터틀');
+  }
+  if (normPos.includes('버터플라이')) {
+    return video.startPosition.includes('버터플라이');
+  }
+  if (normPos.includes('니온밸리') || normPos.includes('니온 벨리')) {
+    return video.startPosition.includes('니온밸리');
+  }
+  if (normPos.includes('사이드')) {
+    return video.startPosition.includes('사이드');
+  }
+  if (normPos.includes('하프')) {
+    return video.startPosition.includes('하프');
+  }
+  if (normPos.includes('클로즈드')) {
+    return video.startPosition.includes('클로즈드');
+  }
+  if (normPos.includes('라쏘')) {
+    return video.startPosition.includes('라쏘');
+  }
+  if (normPos.includes('스파이더')) {
+    return video.startPosition.includes('스파이더');
+  }
+  if (normPos.includes('헤드락') || normPos.includes('길로틴')) {
+    return video.startPosition.includes('헤드락');
+  }
+
+  return vPos.includes(normPos) || normPos.includes(vPos);
+}
+
+/**
+ * 전체 영상 풀 생성 (기본 추천 풀 + 도장 아카이브 영상 결합 및 URL 중복 제거)
+ */
+export function buildAllVideosPool(
+  userLibraryVideos: TechniqueVideo[] = []
+): AiRecommendedVideoCandidate[] {
+  const userCandidates: AiRecommendedVideoCandidate[] = userLibraryVideos
+    .filter((v) => (v.youtubeId && v.youtubeId.trim().length > 0) || (v.youtubeUrl && v.youtubeUrl.trim().length > 0))
+    .map((v) => {
+      const hasKorean = /[가-힣]/.test(v.titleKo || '');
+      return {
+        id: `user-${v.id}`,
+        techniqueName: v.titleKo,
+        techniqueNameEn: v.titleEn || '',
+        startPosition: v.position || '클로즈드 가드',
+        category: v.category || '기타',
+        giType: (v.giType as any) || 'Both',
+        youtubeUrl: v.youtubeUrl || `https://www.youtube.com/watch?v=${v.youtubeId}`,
+        youtubeId: v.youtubeId,
+        channelName: '도장 아카이브',
+        thumbnailUrl: v.thumbnailUrl || `https://i.ytimg.com/vi/${v.youtubeId}/hqdefault.jpg`,
+        duration: '08:00',
+        recommendedStartTime: '01:00',
+        recommendedStartSec: 60,
+        keyDetailTag: v.generalNotes ? v.generalNotes.slice(0, 30) : '도장 등록 기술',
+        language: hasKorean ? 'ko' : 'en',
+      };
+    });
+
+  const combined = [...CURATED_BJJ_RECOMMENDATION_POOL, ...userCandidates];
+  const uniqueByUrl: AiRecommendedVideoCandidate[] = [];
+  const seenKeys = new Set<string>();
+
+  for (const item of combined) {
+    const key = getNormalizedVideoKey(item.youtubeUrl || item.youtubeId || '');
+    if (key && !seenKeys.has(key)) {
+      seenKeys.add(key);
+      uniqueByUrl.push({
+        ...item,
+        language: getEffectiveVideoLang(item),
+      });
+    }
+  }
+
+  return uniqueByUrl;
+}
+
+export interface PickUniqueVideosParams {
+  allVideosPool: AiRecommendedVideoCandidate[]; // 전체 영상 DB (또는 검색 결과)
+  settings: AiRecommendSettings;                // 관장 맞춤 설정 (language, dailyGoalCount, dayStyles 등)
+  dateStr: string;                              // 대상 날짜 (예: '2026-10-15')
+  dayOfWeek: number;                            // 요일 (0:일, 1:월 ... 6:토)
+  targetPosition: string;                       // 해당 날짜의 목표 포지션/테마
+  targetType?: string;                          // 기술 성격 필터 (ALL / 전체, 스윕, 가드 패스 등)
+  loggedUrls: Set<string>;                      // 수업일지에 이미 등록된 제외 대상 URL Set
+  currentlyAssignedUrls: Set<string>;           // 다른 요일 및 현재 날짜의 다른 카드에 이미 배치된 URL Set
+  countToPick: number;                          // 뽑아야 할 개수 (전체 새로고침 시 targetCount, 개별 교체 시 1)
+  recordToSeenHistory?: boolean;                // seenUrlsHistory에 즉시 기록할지 여부 (기본값 true)
+}
+
+/**
+ * 3. URL 중복 검사 기반 영상 추천/교체 핵심 함수
+ * "검색했는데 URL이 같은가? -> Yes면 제외(continue), No면 채택!"
+ */
+export function pickUniqueVideos({
+  allVideosPool,
+  settings,
+  dateStr,
+  dayOfWeek,
+  targetPosition,
+  targetType = 'ALL',
+  loggedUrls,
+  currentlyAssignedUrls,
+  countToPick,
+  recordToSeenHistory = true,
+}: PickUniqueVideosParams): AiRecommendedVideoCandidate[] {
+  const rawStyle =
+    (settings.dayStyles as Record<number, string>)[dayOfWeek] || 'all';
+  const normStyle = rawStyle.toLowerCase();
+
+  // 휴관일('off' / 'Off')은 빈 배열 반환
+  if (normStyle === 'off') return [];
+
+  // [Step 1] 언어 필터 엄격 적용 (버그 수정: 제목이 아닌 명시적 lang 태그 및 채널 언어 기준)
+  const langFilteredPool = allVideosPool.filter((video) => {
+    const vLang = getEffectiveVideoLang(video);
+    if (settings.language === 'ko') return vLang === 'ko';
+    if (settings.language === 'en') return vLang === 'en';
+    return true; // 'all'인 경우 모두 허용
+  });
+
+  // [Step 2] 요일별 스타일(Gi/No-Gi/Wrestling/Judo) 엄격 매칭
+  const styleFilteredPool = langFilteredPool.filter((video) => {
+    const vStyle = (video as any).style || video.giType;
+    const vPosGroup = (video as any).positionGroup || '';
+    if (normStyle === 'all') return true;
+    if (normStyle === 'judo') {
+      return (
+        vStyle === 'Judo' ||
+        vStyle === '유도' ||
+        video.category === '유도 메치기 연계' ||
+        video.category.includes('유도') ||
+        video.startPosition.includes('유도')
+      );
+    }
+    if (normStyle === 'wrestling') {
+      return (
+        vStyle === 'Wrestling' ||
+        vStyle === '레슬링' ||
+        vPosGroup === '스탠딩' ||
+        video.category === '테이크다운' ||
+        video.startPosition.includes('스탠딩') ||
+        video.startPosition.includes('레슬링')
+      );
+    }
+    if (normStyle === 'no-gi' || normStyle === 'nogi') {
+      return vStyle === 'No-Gi' || vStyle === 'Both';
+    }
+    if (normStyle === 'gi') {
+      return vStyle === 'Gi' || vStyle === 'Both';
+    }
+    return true;
+  });
+
+  // [Step 3] URL 중복 검사 함수 ("URL이 같은가? Yes -> 제외, No -> 통과")
+  const isUrlDuplicate = (videoUrl: string): boolean => {
+    const key = getNormalizedVideoKey(videoUrl);
+    if (!key) return true;
+    if (loggedUrls.has(key)) return true;            // 1) 수업일지 중복 방지 기간 내 영상이면 제외 (Yes)
+    if (currentlyAssignedUrls.has(key)) return true; // 2) 다른 요일/옆 카드에 이미 떠 있는 영상이면 제외 (Yes)
+    if (seenUrlsHistory.has(key)) return true;       // 3) '영상 교체'로 이미 봤던 영상이면 제외 (Yes)
+    return false;                                    // 전부 아니면 새 영상! (No -> 보여주기)
+  };
+
+  const isTypeMatch = (video: AiRecommendedVideoCandidate): boolean => {
+    if (!targetType || targetType === 'ALL' || targetType === '전체' || targetType === '미분류') {
+      return true;
+    }
+    const vType = (video as any).type || video.category;
+    return vType === targetType;
+  };
+
+  // 날짜별 결정론적 회전 시드 (요일/날짜마다 시작 인덱스를 분산하여 다양성 보장)
+  const rotatePoolByDate = (pool: AiRecommendedVideoCandidate[]): AiRecommendedVideoCandidate[] => {
+    if (pool.length <= 1) return pool;
+    const parts = (dateStr || '').split('-').map(Number);
+    const dateObj =
+      parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
+    const epochDays = Math.abs(Math.floor(dateObj.getTime() / (1000 * 60 * 60 * 24)));
+    const offset = (epochDays * Math.max(countToPick, 1) + dayOfWeek) % pool.length;
+    return [...pool.slice(offset), ...pool.slice(0, offset)];
+  };
+
+  const rotatedStylePool = rotatePoolByDate(styleFilteredPool);
+
+  // [Step 4] 1차 탐색: 목표 포지션 + 기술 성격 + URL 비중복 조건으로 검색
+  let candidates: AiRecommendedVideoCandidate[] = [];
+  const candidateKeys = new Set<string>();
+
+  const pushUniqueCandidate = (video: AiRecommendedVideoCandidate) => {
+    const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+    const key = getNormalizedVideoKey(urlStr);
+    if (key && !candidateKeys.has(key)) {
+      candidateKeys.add(key);
+      candidates.push(video);
+    }
+  };
+
+  rotatedStylePool.forEach((video) => {
+    const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+    const matchPos =
+      (video as any).position === targetPosition ||
+      (video as any).theme === targetPosition ||
+      matchesPositionOrTheme(video, targetPosition);
+    const matchType = isTypeMatch(video);
+    if (matchPos && matchType && !isUrlDuplicate(urlStr)) {
+      pushUniqueCandidate(video);
+    }
+  });
+
+  // [Step 5] 스마트 폴백 1단계: 해당 포지션에 해당 스타일(예: 베림보로 + No-Gi) 영상이 부족할 때
+  // 똑같은 영상을 중복해서 보여주는 대신, 같은 스타일(No-Gi)의 다른 연관 기술에서 비중복 URL을 찾음
+  if (candidates.length < countToPick) {
+    rotatedStylePool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      const matchType = isTypeMatch(video);
+      if (matchType && !isUrlDuplicate(urlStr)) {
+        pushUniqueCandidate(video);
+      }
+    });
+  }
+
+  // 성격 필터(targetType)가 좁아서 여전히 부족한 경우, 같은 스타일(styleFilteredPool) 내 모든 비중복 URL로 확장
+  if (candidates.length < countToPick) {
+    rotatedStylePool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      if (!isUrlDuplicate(urlStr)) {
+        pushUniqueCandidate(video);
+      }
+    });
+  }
+
+  // [Step 6] 스마트 폴백 2단계: '다른 영상 교체'를 너무 많이 눌러서 모든 후보를 다 봤을 때
+  // 현재 화면에 떠 있는 카드들과 수업일지 등록 영상은 절대 겹치지 않게 유지하되, 이전 스킵 기록(seenUrlsHistory)만 초기화하여 순환
+  if (candidates.length < countToPick) {
+    seenUrlsHistory.clear();
+    // 6-1: 목표 포지션 우선 재탐색 (loggedUrls 및 currentlyAssignedUrls 절대 제외 유지)
+    rotatedStylePool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      const key = getNormalizedVideoKey(urlStr);
+      const matchPos =
+        (video as any).position === targetPosition ||
+        (video as any).theme === targetPosition ||
+        matchesPositionOrTheme(video, targetPosition);
+      const matchType = isTypeMatch(video);
+      if (matchPos && matchType && !loggedUrls.has(key) && !currentlyAssignedUrls.has(key)) {
+        pushUniqueCandidate(video);
+      }
+    });
+    // 6-2: 동일 스타일 전체 재탐색 (loggedUrls 및 currentlyAssignedUrls 절대 제외 유지)
+    if (candidates.length < countToPick) {
+      rotatedStylePool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const key = getNormalizedVideoKey(urlStr);
+        if (!loggedUrls.has(key) && !currentlyAssignedUrls.has(key)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+  }
+
+  // 최종 선택된 영상들의 URL을 '이미 노출된 URL'로 즉시 등록하여 다음 요일과 절대 겹치지 않게 함
+  const selected = candidates.slice(0, countToPick).map((v) => ({
+    ...v,
+    startPosition: targetPosition || v.startPosition,
+  }));
+
+  selected.forEach((v) => {
+    const urlStr = (v as any).url || v.youtubeUrl || v.youtubeId || '';
+    const key = getNormalizedVideoKey(urlStr);
+    if (key) {
+      currentlyAssignedUrls.add(key);
+      if (recordToSeenHistory) {
+        seenUrlsHistory.add(key);
+      }
+    }
+  });
+
+  return selected;
+}
+
+/**
+ * Main recommendation query function for a given day (powered by pickUniqueVideos)
  */
 export function getRecommendedCandidatesForDay(
   dateStr: string,
@@ -1998,7 +2418,9 @@ export function getRecommendedCandidatesForDay(
   overrideCategory?: string,
   seedOffset: number = 0,
   userLibraryVideos: TechniqueVideo[] = [],
-  excludeYoutubeIdsForSession?: Set<string>
+  excludeYoutubeIdsForSession?: Set<string>,
+  sharedAssignedUrls?: Set<string>,
+  recordToSeenHistory: boolean = false
 ): {
   startPosition: string;
   dayStyle: AiRecommendDayStyle;
@@ -2009,9 +2431,9 @@ export function getRecommendedCandidatesForDay(
   wasReset?: boolean;
 } {
   const dayOfWeek = getDayOfWeekFromDateStr(dateStr);
-  const dayStyle: AiRecommendDayStyle = (settings.dayStyles as Record<number, AiRecommendDayStyle>)[dayOfWeek] || 'all';
+  const dayStyle: AiRecommendDayStyle =
+    (settings.dayStyles as Record<number, AiRecommendDayStyle>)[dayOfWeek] || 'all';
 
-  // 0. Handle Day Off (🚫 휴관) (Requirement 2)
   if (dayStyle === 'off') {
     return {
       startPosition: '휴관 (수업 없음)',
@@ -2031,358 +2453,50 @@ export function getRecommendedCandidatesForDay(
     dayStyle
   );
 
-  // 1. Calculate deduplication cutoff
-  let dedupDays = 90;
-  if (settings.dedupPeriod === 'custom') {
-    dedupDays = settings.customDedupDays || 90;
-  } else {
-    dedupDays = parseInt(settings.dedupPeriod || '90', 10) || 90;
-  }
-  const targetDateTime = new Date(dateStr).getTime();
-  const dedupCutoffTime = targetDateTime - dedupDays * 24 * 60 * 60 * 1000;
-
-  const taughtProhibitedIds = new Set<string>();
-  const taughtProhibitedNames = new Set<string>();
-  currentJournalEntries.forEach((entry) => {
-    const entryTime = new Date(entry.date).getTime();
-    if (!isNaN(entryTime) && entryTime >= dedupCutoffTime && entryTime < targetDateTime) {
-      if (entry.videoTitleKo) taughtProhibitedNames.add(entry.videoTitleKo.trim().toLowerCase());
-      if (entry.youtubeId) taughtProhibitedIds.add(entry.youtubeId);
-    }
-  });
-
-  // Convert any user videos into candidates if they match
-  const userCandidates: AiRecommendedVideoCandidate[] = userLibraryVideos
-    .filter((v) => v.youtubeId && v.youtubeId.trim().length > 0)
-    .map((v) => ({
-      id: `user-${v.id}`,
-      techniqueName: v.titleKo,
-      techniqueNameEn: v.titleEn || '',
-      startPosition: v.position || startPosition,
-      category: v.category || '기타',
-      giType: (v.giType as any) || 'Both',
-      youtubeUrl: v.youtubeUrl || `https://www.youtube.com/watch?v=${v.youtubeId}`,
-      youtubeId: v.youtubeId,
-      channelName: '도장 아카이브',
-      thumbnailUrl: v.thumbnailUrl || `https://i.ytimg.com/vi/${v.youtubeId}/hqdefault.jpg`,
-      duration: '08:00',
-      recommendedStartTime: '01:00',
-      recommendedStartSec: 60,
-      keyDetailTag: v.generalNotes ? v.generalNotes.slice(0, 30) : '도장 등록 기술',
-      language: 'ko',
-    }));
-
-  const fullRawPool = [...CURATED_BJJ_RECOMMENDATION_POOL, ...userCandidates];
-
-  // 2. Strict Language Isolation (Requirement 4)
-  let langPool: AiRecommendedVideoCandidate[];
-  if (settings.language === 'ko') {
-    langPool = fullRawPool.filter((c) => c.language === 'ko');
-  } else if (settings.language === 'en') {
-    langPool = fullRawPool.filter((c) => c.language === 'en');
-  } else {
-    langPool = fullRawPool;
-  }
-
-  // 3. Filter pool by start position / theme
-  const normPos = startPosition.toLowerCase().trim();
-  let matchingPool = langPool.filter((c) => {
-    // 1) Judo
-    if (normPos.includes('유도')) {
-      return (
-        c.giType === '유도' ||
-        c.category.includes('유도') ||
-        c.techniqueName.includes('유도') ||
-        c.techniqueName.includes('업어치기') ||
-        c.techniqueName.includes('허벅다리') ||
-        c.techniqueName.includes('밭다리') ||
-        c.techniqueName.includes('발목받치기') ||
-        c.startPosition.includes('유도')
-      );
-    }
-    // 2) Wrestling / Takedown
-    if (normPos.includes('레슬링') || normPos.includes('스탠딩') || normPos.includes('테이크다운')) {
-      return (
-        c.giType === '레슬링' ||
-        c.category === '테이크다운' ||
-        c.category.includes('발기술') ||
-        c.startPosition.includes('스탠딩') ||
-        c.techniqueName.includes('태클') ||
-        c.techniqueName.includes('싱글렉') ||
-        c.techniqueName.includes('더블렉') ||
-        c.techniqueName.includes('암드래그')
-      );
-    }
-    // 3) Free theme / Special sequences
-    if (normPos.includes('자유 테마')) {
-      return true;
-    }
-    // 4) Submissions
-    if (normPos.includes('서브미션')) {
-      return (
-        c.category === '서브미션' ||
-        c.techniqueName.includes('초크') ||
-        c.techniqueName.includes('암바') ||
-        c.techniqueName.includes('기무라') ||
-        c.techniqueName.includes('트라이앵글')
-      );
-    }
-    // 5) Escapes
-    if (normPos.includes('이스케이프') || normPos.includes('생존') || normPos.includes('탈출')) {
-      return (
-        c.category === '이스케이프' ||
-        c.techniqueName.includes('탈출') ||
-        c.techniqueName.includes('이스케이프') ||
-        c.techniqueName.includes('방어')
-      );
-    }
-    // 6) Guard retention & recovery
-    if (normPos.includes('가드 리텐션') || normPos.includes('리커버리')) {
-      return (
-        c.category.includes('가드') ||
-        c.category === '스윕' ||
-        c.techniqueName.includes('리텐션') ||
-        c.techniqueName.includes('리커버리') ||
-        c.startPosition.includes('가드')
-      );
-    }
-    // 7) Guard passing & pressure
-    if (
-      normPos.includes('가드 패스') ||
-      normPos.includes('압박 패스') ||
-      normPos.includes('스매시') ||
-      normPos.includes('패스')
-    ) {
-      return (
-        c.category === '가드 패스' ||
-        c.techniqueName.includes('패스') ||
-        c.startPosition.includes('오픈 가드 탑') ||
-        c.startPosition.includes('가드 패스')
-      );
-    }
-    // 8) Modern Guard / Berimbolo / Lasso / Spider / De La Riva
-    if (
-      normPos.includes('모던 가드') ||
-      normPos.includes('베림보로') ||
-      normPos.includes('데라히바')
-    ) {
-      return (
-        c.startPosition.includes('데라히바') ||
-        c.startPosition.includes('라쏘') ||
-        c.startPosition.includes('스파이더') ||
-        c.techniqueName.includes('베림보로') ||
-        c.techniqueName.includes('데라히바') ||
-        c.techniqueName.includes('라쏘') ||
-        c.techniqueName.includes('스파이더')
-      );
-    }
-    // 9) Mount
-    if (normPos === '마운트' || (normPos.includes('마운트') && !normPos.includes('백'))) {
-      return (
-        (c.startPosition.includes('마운트') && !c.startPosition.includes('백')) ||
-        c.techniqueName.includes('마운트')
-      );
-    }
-    // 10) Back mount
-    if (
-      normPos.includes('백 마운트') ||
-      normPos.includes('백 컨트롤') ||
-      normPos.includes('백포지션')
-    ) {
-      return c.startPosition.includes('백') || c.techniqueName.includes('백');
-    }
-    // 11) Turtle
-    if (normPos.includes('터틀') || normPos.includes('크루시픽스')) {
-      return (
-        c.startPosition.includes('터틀') ||
-        c.techniqueName.includes('터틀') ||
-        c.techniqueName.includes('크루시픽스')
-      );
-    }
-    // 12) Butterfly Guard
-    if (normPos.includes('버터플라이')) {
-      return c.startPosition.includes('버터플라이') || c.techniqueName.includes('버터플라이');
-    }
-    // 13) Knee on Belly
-    if (normPos.includes('니온밸리') || normPos.includes('니온 벨리')) {
-      return (
-        c.startPosition.includes('니온밸리') ||
-        c.techniqueName.includes('니온밸리') ||
-        c.techniqueName.includes('니온 벨리') ||
-        c.techniqueName.includes('니온 더 벨리')
-      );
-    }
-    // 14) Side Control
-    if (normPos.includes('사이드')) {
-      return c.startPosition.includes('사이드') || c.techniqueName.includes('사이드');
-    }
-    // 15) Half Guard
-    if (normPos.includes('하프')) {
-      return c.startPosition.includes('하프') || c.techniqueName.includes('하프');
-    }
-    // 16) Closed Guard
-    if (normPos.includes('클로즈드')) {
-      return (
-        c.startPosition.includes('클로즈드') ||
-        c.techniqueName.includes('클로즈드') ||
-        c.techniqueName.includes('클로즈가드')
-      );
-    }
-    // 17) Lasso Guard
-    if (normPos.includes('라쏘')) {
-      return c.startPosition.includes('라쏘') || c.techniqueName.includes('라쏘');
-    }
-    // 18) Spider Guard
-    if (normPos.includes('스파이더')) {
-      return c.startPosition.includes('스파이더') || c.techniqueName.includes('스파이더');
-    }
-    // 19) Front Headlock
-    if (normPos.includes('헤드락') || normPos.includes('길로틴')) {
-      return (
-        c.startPosition.includes('헤드락') ||
-        c.techniqueName.includes('헤드락') ||
-        c.techniqueName.includes('길로틴')
-      );
-    }
-
-    return (
-      c.startPosition.toLowerCase() === normPos ||
-      c.startPosition.toLowerCase().includes(normPos) ||
-      normPos.includes(c.startPosition.toLowerCase())
-    );
-  });
-
-  // 4. Optional category filter (스윕, 패스, 서브미션, 이스케이프)
-  if (overrideCategory && overrideCategory !== '전체' && overrideCategory !== '미분류') {
-    const catFiltered = matchingPool.filter(
-      (c) => c.category === overrideCategory || c.techniqueName.includes(overrideCategory)
-    );
-    if (catFiltered.length >= 2) {
-      matchingPool = catFiltered;
-    }
-  }
-
-  // 5. Filter by Gi / No-Gi / Wrestling / Judo style
-  if (dayStyle !== 'all') {
-    const styleFiltered = matchingPool.filter((c) => {
-      if (dayStyle === 'gi') return c.giType === 'Gi' || c.giType === 'Both' || c.giType === '유도';
-      if (dayStyle === 'nogi') return c.giType === 'No-Gi' || c.giType === 'Both';
-      if (dayStyle === 'wrestling')
-        return (
-          c.giType === '레슬링' ||
-          c.giType === 'No-Gi' ||
-          c.category === '테이크다운' ||
-          c.techniqueName.includes('태클')
-        );
-      if (dayStyle === 'judo')
-        return (
-          c.giType === '유도' ||
-          c.giType === 'Gi' ||
-          c.category.includes('유도') ||
-          c.techniqueName.includes('유도') ||
-          c.techniqueName.includes('업어치기') ||
-          c.techniqueName.includes('허벅다리') ||
-          c.techniqueName.includes('밭다리')
-        );
-      return true;
-    });
-    if (styleFiltered.length >= 2) {
-      matchingPool = styleFiltered;
-    }
-  }
-
-  // 6. Filter out duplicated taught videos from Class Journal
-  const unduplicatedPool = matchingPool.filter(
-    (c) =>
-      !taughtProhibitedIds.has(c.youtubeId) &&
-      !taughtProhibitedNames.has(c.techniqueName.toLowerCase())
+  const allVideosPool = buildAllVideosPool(userLibraryVideos);
+  const loggedUrls = getLoggedUrlsSet(
+    currentJournalEntries,
+    settings.dedupPeriod,
+    settings.customDedupDays,
+    dateStr
   );
-  if (unduplicatedPool.length >= 1) {
-    matchingPool = unduplicatedPool;
+
+  const currentlyAssignedUrls = sharedAssignedUrls || new Set<string>();
+  if (excludeYoutubeIdsForSession && excludeYoutubeIdsForSession.size > 0) {
+    excludeYoutubeIdsForSession.forEach((item) => {
+      const k = getNormalizedVideoKey(item);
+      if (k) seenUrlsHistory.add(k);
+    });
   }
-
-  // Remove duplicate youtubeIds from matchingPool
-  const uniquePool: AiRecommendedVideoCandidate[] = [];
-  const seenIds = new Set<string>();
-  for (const item of matchingPool) {
-    if (!seenIds.has(item.youtubeId)) {
-      seenIds.add(item.youtubeId);
-      uniquePool.push(item);
-    }
-  }
-
-  const finalPool = uniquePool.length >= 1 ? uniquePool : langPool;
-  const totalMatchingPoolSize = finalPool.length;
-
-  // Handle sessionSeen exclusions (guarantees NO duplicates on clicking "Other 3 Videos")
-  let candidatePool = finalPool;
-  let wasReset = false;
 
   const goalCount = Math.min(Math.max(settings.dailyGoalCount || 3, 1), 3);
+  const targetType =
+    !overrideCategory || overrideCategory === '전체' || overrideCategory === '미분류'
+      ? 'ALL'
+      : overrideCategory;
 
-  if (excludeYoutubeIdsForSession && excludeYoutubeIdsForSession.size > 0) {
-    const unseen = finalPool.filter((c) => !isSameYoutubeUrlOrId(c, excludeYoutubeIdsForSession));
-    if (unseen.length >= 1) {
-      candidatePool = unseen;
-    } else {
-      // All items in finalPool were already seen on this date in current session! Cycle back!
-      wasReset = true;
-      candidatePool = finalPool;
-    }
-  }
-
-  const poolLen = candidatePool.length;
-
-  const parts = dateStr.split('-').map(Number);
-  const dateObj = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
-  const epochDays = Math.floor(dateObj.getTime() / (1000 * 60 * 60 * 24));
-  const jsDay = dateObj.getDay();
-  const weekDayIndex = (jsDay + 6) % 7;
-
-  const baseDayOffset =
-    settings.positionCycle === 'weekly'
-      ? weekDayIndex * goalCount
-      : Math.abs(epochDays) * goalCount;
-
-  const startIdx = (baseDayOffset + seedOffset) % poolLen;
-
-  const finalCandidates: AiRecommendedVideoCandidate[] = [];
-  const chosenYtIds = new Set<string>();
-
-  // Pick unique candidates within this day
-  for (let step = 0; step < poolLen && finalCandidates.length < goalCount; step++) {
-    const cand = candidatePool[(startIdx + step) % poolLen];
-    if (!chosenYtIds.has(cand.youtubeId)) {
-      chosenYtIds.add(cand.youtubeId);
-      finalCandidates.push({
-        ...cand,
-        startPosition,
-      });
-    }
-  }
-
-  // If still fewer than goalCount because unseen candidate count was less than goalCount, pad from langPool
-  if (finalCandidates.length < goalCount) {
-    const langPoolLen = langPool.length;
-    for (let step = 0; step < langPoolLen && finalCandidates.length < goalCount; step++) {
-      const padCand = langPool[(startIdx + step) % langPoolLen];
-      if (!chosenYtIds.has(padCand.youtubeId)) {
-        chosenYtIds.add(padCand.youtubeId);
-        finalCandidates.push({
-          ...padCand,
-          id: `pad-${startPosition}-${dateStr}-${step}`,
-          startPosition,
-        });
-      }
-    }
-  }
+  const prevSeenSize = seenUrlsHistory.size;
+  const selected = pickUniqueVideos({
+    allVideosPool,
+    settings,
+    dateStr,
+    dayOfWeek,
+    targetPosition: startPosition,
+    targetType,
+    loggedUrls,
+    currentlyAssignedUrls,
+    countToPick: goalCount,
+    recordToSeenHistory,
+  });
+  const wasReset = prevSeenSize > 0 && seenUrlsHistory.size < prevSeenSize;
 
   return {
     startPosition,
     dayStyle,
-    candidates: finalCandidates,
-    totalPoolSize: totalMatchingPoolSize,
-    unseenPoolSize: candidatePool.length,
+    candidates: selected,
+    totalPoolSize: allVideosPool.length,
+    unseenPoolSize: selected.length,
     wasReset,
   };
 }
+
