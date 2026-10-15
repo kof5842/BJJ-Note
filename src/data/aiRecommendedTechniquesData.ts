@@ -1878,8 +1878,23 @@ export function getNormalizedVideoKey(url: string): string {
 // ==========================================
 // 2. 이미 노출되었거나 교체된 URL을 저장하는 상태 (날짜별/전역 관리)
 // seenUrlsHistory: 사용자가 '다른 영상' 또는 '영상 교체'를 눌러 넘긴 URL 기록
+// seenUrlsOrder: FIFO(가장 오래전에 본 영상부터 순환) 순서 기록
+// dateRefreshOffsetMap: 날짜별 새로고침/교체 누적 오프셋 (매 클릭마다 시작 인덱스 전진)
 // ==========================================
 export const seenUrlsHistory = new Set<string>();
+const seenUrlsOrder: string[] = [];
+const dateRefreshOffsetMap = new Map<string, number>();
+
+export function recordUrlToSeenHistory(urlOrKey: string): void {
+  const key = urlOrKey.startsWith('yt_') ? urlOrKey : getNormalizedVideoKey(urlOrKey);
+  if (!key) return;
+  seenUrlsHistory.add(key);
+  const existingIdx = seenUrlsOrder.indexOf(key);
+  if (existingIdx !== -1) {
+    seenUrlsOrder.splice(existingIdx, 1);
+  }
+  seenUrlsOrder.push(key);
+}
 
 // 영어(해외) 채널 명시적 목록 (제목 번역 여부와 무관하게 채널 언어 기준으로 엄격 판별)
 const ENGLISH_CHANNEL_NAMES = new Set([
@@ -1998,8 +2013,25 @@ export function calculateStartPositionForDate(
     return '레슬링 & 스탠딩 테이크다운';
   }
 
-  const cycleList =
+  const baseCycleList =
     searchScope === 'master_tree_only' ? MASTER_TREE_POSITION_CYCLE : EXTENDED_THEME_CYCLE_ORDER;
+
+  // 요일 스타일(Gi / No-Gi)에 맞지 않는 전용 테마 자동 배정 방지
+  const cycleList = baseCycleList.filter((pos) => {
+    if (dayStyle === 'gi') {
+      return !pos.includes('유도') && !pos.includes('레슬링');
+    }
+    if (dayStyle === 'nogi') {
+      return (
+        !pos.includes('유도') &&
+        !pos.includes('레슬링') &&
+        !pos.includes('라쏘') &&
+        !pos.includes('스파이더') &&
+        !pos.includes('베림보로')
+      );
+    }
+    return true;
+  });
 
   const parts = dateStr.split('-').map(Number);
   const dateObj = parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
@@ -2157,22 +2189,29 @@ export function matchesPositionOrTheme(
 }
 
 /**
- * 전체 영상 풀 생성 (기본 추천 풀 + 도장 아카이브 영상 결합 및 URL 중복 제거)
+ * 전체 영상 풀 생성 (기본 추천 풀 + 도장 아카이브 영상 결합 및 URL/제목 중복 제거)
  */
 export function buildAllVideosPool(
   userLibraryVideos: TechniqueVideo[] = []
 ): AiRecommendedVideoCandidate[] {
   const userCandidates: AiRecommendedVideoCandidate[] = userLibraryVideos
-    .filter((v) => (v.youtubeId && v.youtubeId.trim().length > 0) || (v.youtubeUrl && v.youtubeUrl.trim().length > 0))
+    .filter(
+      (v) =>
+        !/^(tech-\d+|queue-\d+)$/.test(v.id || '') &&
+        ((v.youtubeId && v.youtubeId.trim().length > 0) ||
+          (v.youtubeUrl && v.youtubeUrl.trim().length > 0))
+    )
     .map((v) => {
       const hasKorean = /[가-힣]/.test(v.titleKo || '');
+      const rawGi = (v.giType as string) || 'Both';
+      const normalizedGi = rawGi === 'All' || rawGi === '미분류' ? 'Both' : rawGi;
       return {
         id: `user-${v.id}`,
         techniqueName: v.titleKo,
         techniqueNameEn: v.titleEn || '',
         startPosition: v.position || '클로즈드 가드',
         category: v.category || '기타',
-        giType: (v.giType as any) || 'Both',
+        giType: normalizedGi as any,
         youtubeUrl: v.youtubeUrl || `https://www.youtube.com/watch?v=${v.youtubeId}`,
         youtubeId: v.youtubeId,
         channelName: '도장 아카이브',
@@ -2188,11 +2227,14 @@ export function buildAllVideosPool(
   const combined = [...CURATED_BJJ_RECOMMENDATION_POOL, ...userCandidates];
   const uniqueByUrl: AiRecommendedVideoCandidate[] = [];
   const seenKeys = new Set<string>();
+  const seenTitles = new Set<string>();
 
   for (const item of combined) {
     const key = getNormalizedVideoKey(item.youtubeUrl || item.youtubeId || '');
-    if (key && !seenKeys.has(key)) {
+    const normTitle = (item.techniqueName || '').trim().toLowerCase();
+    if (key && !seenKeys.has(key) && (!normTitle || !seenTitles.has(normTitle))) {
       seenKeys.add(key);
+      if (normTitle) seenTitles.add(normTitle);
       uniqueByUrl.push({
         ...item,
         language: getEffectiveVideoLang(item),
@@ -2212,6 +2254,7 @@ export interface PickUniqueVideosParams {
   targetType?: string;                          // 기술 성격 필터 (ALL / 전체, 스윕, 가드 패스 등)
   loggedUrls: Set<string>;                      // 수업일지에 이미 등록된 제외 대상 URL Set
   currentlyAssignedUrls: Set<string>;           // 다른 요일 및 현재 날짜의 다른 카드에 이미 배치된 URL Set
+  currentScreenUrls?: Set<string>;              // 현재 날짜의 화면에 바로 떠 있는 카드들의 URL Set (절대 재노출 금지)
   countToPick: number;                          // 뽑아야 할 개수 (전체 새로고침 시 targetCount, 개별 교체 시 1)
   recordToSeenHistory?: boolean;                // seenUrlsHistory에 즉시 기록할지 여부 (기본값 true)
 }
@@ -2229,6 +2272,7 @@ export function pickUniqueVideos({
   targetType = 'ALL',
   loggedUrls,
   currentlyAssignedUrls,
+  currentScreenUrls,
   countToPick,
   recordToSeenHistory = true,
 }: PickUniqueVideosParams): AiRecommendedVideoCandidate[] {
@@ -2238,6 +2282,27 @@ export function pickUniqueVideos({
 
   // 휴관일('off' / 'Off')은 빈 배열 반환
   if (normStyle === 'off') return [];
+
+  // 현재 화면에 노출 중이던 카드들의 URL Set (새로고침/개별 교체 시 절대 다시 나오면 안 되는 하드 제외 목록)
+  const hardCurrentScreenKeys = new Set<string>();
+  if (currentScreenUrls) {
+    currentScreenUrls.forEach((u) => {
+      const k = u.startsWith('yt_') ? u : getNormalizedVideoKey(u);
+      if (k) {
+        hardCurrentScreenKeys.add(k);
+        if (recordToSeenHistory) {
+          recordUrlToSeenHistory(k);
+        }
+      }
+    });
+  }
+
+  // 새로고침/교체 호출 시 해당 날짜의 회전 오프셋을 전진시켜 매 클릭마다 완전히 다른 구간부터 탐색
+  let refreshExtraOffset = dateRefreshOffsetMap.get(dateStr) || 0;
+  if (recordToSeenHistory) {
+    refreshExtraOffset += Math.max(countToPick, 1);
+    dateRefreshOffsetMap.set(dateStr, refreshExtraOffset);
+  }
 
   // [Step 1] 언어 필터 엄격 적용 (버그 수정: 제목이 아닌 명시적 lang 태그 및 채널 언어 기준)
   const langFilteredPool = allVideosPool.filter((video) => {
@@ -2285,9 +2350,20 @@ export function pickUniqueVideos({
     const key = getNormalizedVideoKey(videoUrl);
     if (!key) return true;
     if (loggedUrls.has(key)) return true;            // 1) 수업일지 중복 방지 기간 내 영상이면 제외 (Yes)
-    if (currentlyAssignedUrls.has(key)) return true; // 2) 다른 요일/옆 카드에 이미 떠 있는 영상이면 제외 (Yes)
-    if (seenUrlsHistory.has(key)) return true;       // 3) '영상 교체'로 이미 봤던 영상이면 제외 (Yes)
+    if (hardCurrentScreenKeys.has(key)) return true; // 2) 현재 교체 직전 화면에 떠 있던 카드면 절대 제외 (Yes)
+    if (currentlyAssignedUrls.has(key)) return true; // 3) 다른 요일/옆 카드에 이미 떠 있는 영상이면 제외 (Yes)
+    if (recordToSeenHistory && seenUrlsHistory.has(key)) return true; // 4) '다른 영상/영상 교체'로 이미 봤던 영상이면 제외 (Yes)
     return false;                                    // 전부 아니면 새 영상! (No -> 보여주기)
+  };
+
+  // 다른 요일에만 배치되어 있고 현재 날짜에서는 한 번도 본 적 없는지 판별하는 헬퍼
+  const isUnseenOnCurrentDay = (videoUrl: string): boolean => {
+    const key = getNormalizedVideoKey(videoUrl);
+    if (!key) return false;
+    if (loggedUrls.has(key)) return false;
+    if (hardCurrentScreenKeys.has(key)) return false;
+    if (seenUrlsHistory.has(key)) return false;
+    return true;
   };
 
   const isTypeMatch = (video: AiRecommendedVideoCandidate): boolean => {
@@ -2298,40 +2374,64 @@ export function pickUniqueVideos({
     return vType === targetType;
   };
 
-  // 날짜별 결정론적 회전 시드 (요일/날짜마다 시작 인덱스를 분산하여 다양성 보장)
+  // 날짜별 + 새로고침 횟수별 회전 시드 (매 클릭마다 시작 인덱스가 전진하여 절대 같은 순서로 반복되지 않음)
   const rotatePoolByDate = (pool: AiRecommendedVideoCandidate[]): AiRecommendedVideoCandidate[] => {
     if (pool.length <= 1) return pool;
     const parts = (dateStr || '').split('-').map(Number);
     const dateObj =
       parts.length === 3 ? new Date(parts[0], parts[1] - 1, parts[2]) : new Date();
     const epochDays = Math.abs(Math.floor(dateObj.getTime() / (1000 * 60 * 60 * 24)));
-    const offset = (epochDays * Math.max(countToPick, 1) + dayOfWeek) % pool.length;
+    const offset =
+      (epochDays * Math.max(countToPick, 1) + dayOfWeek * 5 + refreshExtraOffset) % pool.length;
     return [...pool.slice(offset), ...pool.slice(0, offset)];
   };
 
   const rotatedStylePool = rotatePoolByDate(styleFilteredPool);
 
+  // 유도/레슬링처럼 전용 영상 풀이 상대적으로 작은 요일에서 모든 전용 영상을 다 본 경우,
+  // 복장 호환성을 지키는 보조 풀(유도 -> Gi/Both, 레슬링 -> No-Gi/Both) 준비
+  const compatibleSecondaryPool = rotatePoolByDate(
+    langFilteredPool.filter((video) => {
+      const vStyle = (video as any).style || video.giType;
+      if (normStyle === 'judo' || normStyle === 'gi') {
+        return vStyle === 'Gi' || vStyle === 'Both' || vStyle === '유도';
+      }
+      if (normStyle === 'wrestling' || normStyle === 'no-gi' || normStyle === 'nogi') {
+        return vStyle === 'No-Gi' || vStyle === 'Both' || vStyle === '레슬링';
+      }
+      return true;
+    })
+  );
+
   // [Step 4] 1차 탐색: 목표 포지션 + 기술 성격 + URL 비중복 조건으로 검색
-  let candidates: AiRecommendedVideoCandidate[] = [];
+  const candidates: AiRecommendedVideoCandidate[] = [];
   const candidateKeys = new Set<string>();
+  const candidateTitles = new Set<string>();
 
   const pushUniqueCandidate = (video: AiRecommendedVideoCandidate) => {
+    if (candidates.length >= countToPick) return;
     const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
     const key = getNormalizedVideoKey(urlStr);
-    if (key && !candidateKeys.has(key)) {
-      candidateKeys.add(key);
-      candidates.push(video);
-    }
+    const normTitle = (video.techniqueName || '').trim().toLowerCase();
+    if (!key || candidateKeys.has(key)) return;
+    if (normTitle && candidateTitles.has(normTitle)) return;
+    if (hardCurrentScreenKeys.has(key) || loggedUrls.has(key)) return;
+    candidateKeys.add(key);
+    if (normTitle) candidateTitles.add(normTitle);
+    candidates.push(video);
+  };
+
+  const checkPosMatch = (video: AiRecommendedVideoCandidate): boolean => {
+    return (
+      (video as any).position === targetPosition ||
+      (video as any).theme === targetPosition ||
+      matchesPositionOrTheme(video, targetPosition)
+    );
   };
 
   rotatedStylePool.forEach((video) => {
     const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-    const matchPos =
-      (video as any).position === targetPosition ||
-      (video as any).theme === targetPosition ||
-      matchesPositionOrTheme(video, targetPosition);
-    const matchType = isTypeMatch(video);
-    if (matchPos && matchType && !isUrlDuplicate(urlStr)) {
+    if (checkPosMatch(video) && isTypeMatch(video) && !isUrlDuplicate(urlStr)) {
       pushUniqueCandidate(video);
     }
   });
@@ -2341,8 +2441,7 @@ export function pickUniqueVideos({
   if (candidates.length < countToPick) {
     rotatedStylePool.forEach((video) => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      const matchType = isTypeMatch(video);
-      if (matchType && !isUrlDuplicate(urlStr)) {
+      if (isTypeMatch(video) && !isUrlDuplicate(urlStr)) {
         pushUniqueCandidate(video);
       }
     });
@@ -2358,36 +2457,126 @@ export function pickUniqueVideos({
     });
   }
 
-  // [Step 6] 스마트 폴백 2단계: '다른 영상 교체'를 너무 많이 눌러서 모든 후보를 다 봤을 때
-  // 현재 화면에 떠 있는 카드들과 수업일지 등록 영상은 절대 겹치지 않게 유지하되, 이전 스킵 기록(seenUrlsHistory)만 초기화하여 순환
-  if (candidates.length < countToPick) {
-    seenUrlsHistory.clear();
-    // 6-1: 목표 포지션 우선 재탐색 (loggedUrls 및 currentlyAssignedUrls 절대 제외 유지)
+  // [Step 5-B] '다른 영상 3개' 클릭 시, 다른 요일(월~토)에 배정된 영상 때문에 현재 날짜에서 아직 한 번도 안 본 영상이 막혀 있는 경우:
+  // 이미 본 영상을 중복 노출하는 것보다 현재 날짜에서 한 번도 본 적 없는(seenUrlsHistory에 없는) 새 영상을 우선 채택!
+  if (recordToSeenHistory && candidates.length < countToPick) {
     rotatedStylePool.forEach((video) => {
       const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-      const key = getNormalizedVideoKey(urlStr);
-      const matchPos =
-        (video as any).position === targetPosition ||
-        (video as any).theme === targetPosition ||
-        matchesPositionOrTheme(video, targetPosition);
-      const matchType = isTypeMatch(video);
-      if (matchPos && matchType && !loggedUrls.has(key) && !currentlyAssignedUrls.has(key)) {
+      if (checkPosMatch(video) && isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
         pushUniqueCandidate(video);
       }
     });
-    // 6-2: 동일 스타일 전체 재탐색 (loggedUrls 및 currentlyAssignedUrls 절대 제외 유지)
     if (candidates.length < countToPick) {
       rotatedStylePool.forEach((video) => {
         const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
-        const key = getNormalizedVideoKey(urlStr);
-        if (!loggedUrls.has(key) && !currentlyAssignedUrls.has(key)) {
+        if (isTypeMatch(video) && isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+    if (candidates.length < countToPick) {
+      rotatedStylePool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (isUnseenOnCurrentDay(urlStr)) {
           pushUniqueCandidate(video);
         }
       });
     }
   }
 
-  // 최종 선택된 영상들의 URL을 '이미 노출된 URL'로 즉시 등록하여 다음 요일과 절대 겹치지 않게 함
+  // [Step 5-C] 유도/레슬링 등 전용 스타일 풀이 3개 미만으로 남았을 때 복장 호환 풀(유도->Gi/Both, 레슬링->No-Gi/Both)에서 미노출 영상 보충
+  if (candidates.length < countToPick) {
+    compatibleSecondaryPool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      if (!isUrlDuplicate(urlStr)) {
+        pushUniqueCandidate(video);
+      }
+    });
+    if (recordToSeenHistory && candidates.length < countToPick) {
+      compatibleSecondaryPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        if (isUnseenOnCurrentDay(urlStr)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+  }
+
+  // [Step 6] 스마트 폴백 2단계: '다른 영상 3개 / 영상 교체'를 아주 많이 눌러서 전체 DB의 모든 후보를 다 봤을 때
+  // 현재 화면에 떠 있는 카드들(hardCurrentScreenKeys)과 수업일지 등록 영상(loggedUrls)은 절대 겹치지 않게 유지하되,
+  // 가장 오래전에 봤던 기록(FIFO)부터 순환하며 채움 (직전 화면의 영상이 다시 나오는 현상 완벽 차단)
+  if (recordToSeenHistory && candidates.length < countToPick) {
+    const oldestFirstKeys = [...seenUrlsOrder];
+    seenUrlsHistory.clear();
+    seenUrlsOrder.length = 0;
+    hardCurrentScreenKeys.forEach((k) => recordUrlToSeenHistory(k));
+    candidateKeys.forEach((k) => recordUrlToSeenHistory(k));
+
+    const getRecycleAgeRank = (video: AiRecommendedVideoCandidate): number => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      const k = getNormalizedVideoKey(urlStr);
+      const idx = oldestFirstKeys.indexOf(k);
+      return idx === -1 ? -1 : idx;
+    };
+
+    const recycledStylePool = [...rotatedStylePool].sort(
+      (a, b) => getRecycleAgeRank(a) - getRecycleAgeRank(b)
+    );
+
+    // 6-1: 목표 포지션 + 다른 요일 비중복 우선
+    recycledStylePool.forEach((video) => {
+      const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+      const key = getNormalizedVideoKey(urlStr);
+      if (
+        checkPosMatch(video) &&
+        isTypeMatch(video) &&
+        !loggedUrls.has(key) &&
+        !hardCurrentScreenKeys.has(key) &&
+        !currentlyAssignedUrls.has(key)
+      ) {
+        pushUniqueCandidate(video);
+      }
+    });
+
+    // 6-2: 동일 스타일 + 다른 요일 비중복
+    if (candidates.length < countToPick) {
+      recycledStylePool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const key = getNormalizedVideoKey(urlStr);
+        if (
+          !loggedUrls.has(key) &&
+          !hardCurrentScreenKeys.has(key) &&
+          !currentlyAssignedUrls.has(key)
+        ) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+
+    // 6-3: 직전 화면(hardCurrentScreenKeys) 및 수업일지(loggedUrls)만 제외하고 동일 스타일에서 가장 오래전 영상 채택
+    if (candidates.length < countToPick) {
+      recycledStylePool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const key = getNormalizedVideoKey(urlStr);
+        if (!loggedUrls.has(key) && !hardCurrentScreenKeys.has(key)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+
+    // 6-4: 복장 호환 풀에서 직전 화면 및 수업일지 제외 채택
+    if (candidates.length < countToPick) {
+      compatibleSecondaryPool.forEach((video) => {
+        const urlStr = (video as any).url || video.youtubeUrl || video.youtubeId || '';
+        const key = getNormalizedVideoKey(urlStr);
+        if (!loggedUrls.has(key) && !hardCurrentScreenKeys.has(key)) {
+          pushUniqueCandidate(video);
+        }
+      });
+    }
+  }
+
+  // 최종 선택된 영상들의 URL을 '이미 노출된 URL'로 즉시 등록하여 다음 요일 및 다음 클릭과 절대 겹치지 않게 함
   const selected = candidates.slice(0, countToPick).map((v) => ({
     ...v,
     startPosition: targetPosition || v.startPosition,
@@ -2399,7 +2588,7 @@ export function pickUniqueVideos({
     if (key) {
       currentlyAssignedUrls.add(key);
       if (recordToSeenHistory) {
-        seenUrlsHistory.add(key);
+        recordUrlToSeenHistory(key);
       }
     }
   });
@@ -2462,10 +2651,14 @@ export function getRecommendedCandidatesForDay(
   );
 
   const currentlyAssignedUrls = sharedAssignedUrls || new Set<string>();
+  const currentScreenUrls = new Set<string>();
   if (excludeYoutubeIdsForSession && excludeYoutubeIdsForSession.size > 0) {
     excludeYoutubeIdsForSession.forEach((item) => {
       const k = getNormalizedVideoKey(item);
-      if (k) seenUrlsHistory.add(k);
+      if (k) {
+        currentScreenUrls.add(k);
+        recordUrlToSeenHistory(k);
+      }
     });
   }
 
@@ -2485,6 +2678,7 @@ export function getRecommendedCandidatesForDay(
     targetType,
     loggedUrls,
     currentlyAssignedUrls,
+    currentScreenUrls,
     countToPick: goalCount,
     recordToSeenHistory,
   });
@@ -2499,4 +2693,5 @@ export function getRecommendedCandidatesForDay(
     wasReset,
   };
 }
+
 

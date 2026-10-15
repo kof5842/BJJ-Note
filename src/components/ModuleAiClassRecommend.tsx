@@ -46,6 +46,7 @@ import {
   getExcludedClassEntriesCount,
   getNormalizedVideoKey,
   seenUrlsHistory,
+  recordUrlToSeenHistory,
   buildAllVideosPool,
   getLoggedUrlsSet,
   pickUniqueVideos,
@@ -490,7 +491,9 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     if (currentData.isOffDay || currentData.candidates.length === 0) return;
 
     const currentlyAssignedUrls = new Set<string>();
-    // Register all currently visible cards across the week AND add current date's cards to seenUrlsHistory
+    const currentScreenUrls = new Set<string>();
+
+    // Register all currently visible cards across the week AND add current date's cards to currentScreenUrls & seenUrlsHistory
     weekDays.forEach((dStr) => {
       const dData = getCandidatesForDate(dStr);
       dData.candidates.forEach((c) => {
@@ -498,7 +501,8 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
         if (key) {
           currentlyAssignedUrls.add(key);
           if (dStr === dateStr) {
-            seenUrlsHistory.add(key);
+            currentScreenUrls.add(key);
+            recordUrlToSeenHistory(key);
           }
         }
       });
@@ -508,7 +512,8 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
       const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
       if (key) {
         currentlyAssignedUrls.add(key);
-        seenUrlsHistory.add(key);
+        currentScreenUrls.add(key);
+        recordUrlToSeenHistory(key);
       }
     });
 
@@ -534,6 +539,7 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
       targetType,
       loggedUrls,
       currentlyAssignedUrls,
+      currentScreenUrls,
       countToPick: goalCount,
       recordToSeenHistory: true,
     });
@@ -564,17 +570,26 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     if (currentData.isOffDay) return;
 
     const currentlyAssignedUrls = new Set<string>();
+    const currentScreenUrls = new Set<string>();
     // Register all currently displayed cards across the week (and on this date) so the replacement never collides
     weekDays.forEach((dStr) => {
       const dData = getCandidatesForDate(dStr);
       dData.candidates.forEach((c) => {
         const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
-        if (key) currentlyAssignedUrls.add(key);
+        if (key) {
+          currentlyAssignedUrls.add(key);
+          if (dStr === dateStr) {
+            currentScreenUrls.add(key);
+          }
+        }
       });
     });
     currentData.candidates.forEach((c) => {
       const key = getNormalizedVideoKey(c.youtubeUrl || c.youtubeId || '');
-      if (key) currentlyAssignedUrls.add(key);
+      if (key) {
+        currentlyAssignedUrls.add(key);
+        currentScreenUrls.add(key);
+      }
     });
 
     const currentCardKey = getNormalizedVideoKey(
@@ -582,7 +597,8 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
     );
     if (currentCardKey) {
       currentlyAssignedUrls.add(currentCardKey);
-      seenUrlsHistory.add(currentCardKey);
+      currentScreenUrls.add(currentCardKey);
+      recordUrlToSeenHistory(currentCardKey);
     }
 
     const dayOfWeek = getDayOfWeekFromDateStr(dateStr);
@@ -605,6 +621,7 @@ export const ModuleAiClassRecommend: React.FC<ModuleAiClassRecommendProps> = ({
       targetType,
       loggedUrls,
       currentlyAssignedUrls,
+      currentScreenUrls,
       countToPick: 1,
       recordToSeenHistory: true,
     });
